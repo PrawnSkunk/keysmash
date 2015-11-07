@@ -1,7 +1,10 @@
-// Combine Receptor and Transmitter into superclass
+// Initialize empty array lists
+ArrayList<Arrow> arrowAL = new ArrayList<Arrow>();
 ArrayList<Receptor> receptorAL = new ArrayList<Receptor>();
 ArrayList<Transmitter> transmitterAL = new ArrayList<Transmitter>();
-ArrayList<Arrow> arrowAL = new ArrayList<Arrow>();
+
+// Declare script as a global variable
+Parse script;
 
 // Numeric Keypad Grid
 PVector[] pos = { 
@@ -16,13 +19,12 @@ PVector[] pos = {
 
 // Key Setup
 char[] keys = { '4', '7', '8', '9', '6', '3', '2', '1' };
-color[] colours = { #fe000d, #ff6600, #fef200, #017b3e, #00887e, #007f9f, #3b4a9f, #9d1c5f };
 boolean[] pressed = new boolean[keys.length];
 
-// Immobile object locations
+// Fixed object locations
 float receptorRadius = 64;
-float transmitterRadius = 600;
 
+// Options
 float speedmod = 8.0;
 
 void keyPressed() {
@@ -49,21 +51,22 @@ void keyReleased() {
 // Instantiate Arrow at respective transmitter
 void addArrow(int i) {
   float[] posArr = pos[i].array();
-  arrowAL.add(new Arrow(posArr[0]*transmitterRadius, posArr[1]*transmitterRadius, -posArr[0]*speedmod, -posArr[1]*speedmod, colours[i]));
+  arrowAL.add(new Arrow(posArr[0]*width, posArr[1]*height, -posArr[0]*speedmod, -posArr[1]*speedmod));
 }
 
 void setup() {
-  size(800, 800);
+  size(640, 640);
   noStroke();
 
+  // Run parser
+  script = new Parse();
+  script.run();
+
+  // Instantiate objects
   for (int i = 0; i < pos.length; i++) {
     float[] posArr = pos[i].array();
-
-    // Instantiate Receptors
-    receptorAL.add(new Receptor(posArr[0]*receptorRadius, posArr[1]*receptorRadius, colours[i]));
-
-    // Instantiate Transmitters
-    transmitterAL.add(new Transmitter(posArr[0]*transmitterRadius, posArr[1]*transmitterRadius));
+    receptorAL.add(new Receptor(posArr[0]*receptorRadius, posArr[1]*receptorRadius));
+    transmitterAL.add(new Transmitter(posArr[0]*width, posArr[1]*height));
   }
 }
 
@@ -71,12 +74,9 @@ void draw() {
 
   background (0);
 
+  // Update Objects
   for (int i=0; i<pos.length; i++) {
-
-    // Update Receptors
     receptorAL.get(i).update();
-
-    // Update Transmitters
     transmitterAL.get(i).update();
   }
 

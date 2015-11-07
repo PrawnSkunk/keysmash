@@ -2,12 +2,12 @@ class Receptor {
 
   // fields
   PVector pos;
-  int colour=255;
+  PImage img;
 
   // constructor
-  Receptor(float xpos, float ypos, color colour) {
+  Receptor(float xpos, float ypos) {
     this.pos = new PVector(xpos, ypos);
-    this.colour = colour;
+    img = loadImage("receptor.png");
   }
 
   // update receptors
@@ -29,9 +29,8 @@ class Receptor {
   void drawMe() {
     pushMatrix();
     translate(height/2, width/2);
-    ellipseMode(CENTER); 
-    fill(colour);
-    ellipse(pos.x, pos.y, receptorRadius, receptorRadius);
+    imageMode(CENTER); 
+    image(img, pos.x, pos.y);
     popMatrix();
   }
 }

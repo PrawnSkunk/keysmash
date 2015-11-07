@@ -3,13 +3,13 @@ class Arrow {
   // fields
   PVector pos;
   PVector vel;
-  int colour=255;
+  PImage img;
 
   // constructor
-  Arrow(float xpos, float ypos, float xvel, float yvel, color colour) {
+  Arrow(float xpos, float ypos, float xvel, float yvel) {
     this.pos = new PVector(xpos, ypos);
     this.vel = new PVector(xvel, yvel);
-    this.colour = colour;
+    img = loadImage("note_red.png");
   }
 
   // update arrow
@@ -35,9 +35,8 @@ class Arrow {
   void drawMe() {
     pushMatrix();
     translate(height/2, width/2);
-    ellipseMode(CENTER); 
-    fill(colour);
-    ellipse(pos.x, pos.y, receptorRadius, receptorRadius);
+    imageMode(CENTER); 
+    image(img, pos.x, pos.y);
     popMatrix();
   }
 }
