@@ -1,10 +1,20 @@
+/* @pjs preload="video out e/video out e.mp3";  */
+/* @pjs preload="note_red.png"; */
+/* @pjs preload="receptor.png"; */
+
 // Initialize empty array lists
 ArrayList<Arrow> arrowAL = new ArrayList<Arrow>();
 ArrayList<Receptor> receptorAL = new ArrayList<Receptor>();
 ArrayList<Transmitter> transmitterAL = new ArrayList<Transmitter>();
 
+import ddf.minim.*;
+
 // Declare script as a global variable
-Parse script;
+Parse sm;
+
+// timing
+float m, time;
+float timeRead;
 
 // Numeric Keypad Grid
 PVector[] pos = { 
@@ -25,7 +35,7 @@ boolean[] pressed = new boolean[keys.length];
 float receptorRadius = 64;
 
 // Options
-float speedmod = 8.0;
+float speedmod = 10.0;
 
 void keyPressed() {
 
@@ -57,10 +67,14 @@ void addArrow(int i) {
 void setup() {
   size(640, 640);
   noStroke();
+  // Load Audio
+  Minim minim = new Minim(this);
+  AudioPlayer song = minim.loadFile("video out e/video out e.mp3");
 
   // Run parser
-  script = new Parse();
-  script.run();
+  sm = new Parse();
+  sm.run();
+  //mStart = (int)sm.offset;
 
   // Instantiate objects
   for (int i = 0; i < pos.length; i++) {
@@ -68,11 +82,66 @@ void setup() {
     receptorAL.add(new Receptor(posArr[0]*receptorRadius, posArr[1]*receptorRadius));
     transmitterAL.add(new Transmitter(posArr[0]*width, posArr[1]*height));
   }
+
+  // Play Audio
+  song.play();
 }
 
 void draw() {
 
+  m = millis();
+  time = (m/1000)+sm.offset+0.45;
+
   background (0);
+
+  for (int i=0; i<sm.r0.length; i++) {
+    if (sm.r0[i] - time < 0 && sm.r0[i] - time > -0.02) { 
+      addArrow(0); 
+      break;
+    }
+  }
+  for (int i=0; i<sm.r1.length; i++) {
+    if (sm.r1[i] - time < 0 && sm.r1[i] - time > -0.02) { 
+      addArrow(1); 
+      break;
+    }
+  }
+  for (int i=0; i<sm.r2.length; i++) {
+    if (sm.r2[i] - time < 0 && sm.r2[i] - time > -0.02) { 
+      addArrow(2); 
+      break;
+    }
+  }
+  for (int i=0; i<sm.r3.length; i++) {
+    if (sm.r3[i] - time < 0 && sm.r3[i] - time > -0.02) { 
+      addArrow(3); 
+      break;
+    }
+  }
+  for (int i=0; i<sm.r4.length; i++) {
+    if (sm.r4[i] - time < 0 && sm.r4[i] - time > -0.02) { 
+      addArrow(4); 
+      break;
+    }
+  }
+  for (int i=0; i<sm.r5.length; i++) {
+    if (sm.r5[i] - time < 0 && sm.r5[i] - time > -0.02) { 
+      addArrow(5); 
+      break;
+    }
+  }
+  for (int i=0; i<sm.r6.length; i++) {
+    if (sm.r6[i] - time < 0 && sm.r6[i] - time > -0.02) { 
+      addArrow(6); 
+      break;
+    }
+  }
+  for (int i=0; i<sm.r7.length; i++) {
+    if (sm.r7[i] - time < 0 && sm.r7[i] - time > -0.02) { 
+      addArrow(7); 
+      break;
+    }
+  }
 
   // Update Objects
   for (int i=0; i<pos.length; i++) {

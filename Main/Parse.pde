@@ -4,25 +4,49 @@ class Parse {
   String[] lines;
   String[][] difficulties;
   float[][] bpms;
-  int[][][][][][][][] notes;
+  float[][][][][][][][] notes;
+  float[] r0 = new float[0];
+  float[] r1 = new float[0];
+  float[] r2 = new float[0];
+  float[] r3 = new float[0];
+  float[] r4 = new float[0];
+  float[] r5 = new float[0];
+  float[] r6 = new float[0];
+  float[] r7 = new float[0];
   boolean notesEnd;
+  String title;
+  String artist;
+  float offset;
+  String bpmString;
+  String[] bpmSubstrings;
+  float[] split;
+  boolean selectHardest = true;
+  int selectedDifficulty;
+  int currentLine;
+  int notesInMeasure;
+  int measureNum = 1;
+  float currentBpm;
+  float secPerNote;
+  int linesProcessed;
+  float currentTime;
+  int[] lineNotes = new int[0];
+  int j=0;
 
   // constructor
   Parse() {
     lines  = new String[0];
     difficulties = new String[0][0];
     bpms =  new float[0][0];
-    notes = new int[0][0][0][0][0][0][0][0];
+    notes = new float[0][0][0][0][0][0][0][0];
   }
 
   // functionality
-  void getNotes(int j) {
-    int[] lineNotes = new int[0];
-
-    for (int i=0; i < lines[j].length(); i++) {
+  void getNotes(int u) {
+    lineNotes = new int[0];  
+    for (int i=0; i < lines[u].length(); i++) {   
       // accept normal notes and hold heads as notes
-      if (lines[j].charAt(i) == 1 || lines[j].charAt(i) == 2) {
-        append(lineNotes, i);
+      if (lines[u].charAt(i) == '1' || lines[u].charAt(i) == '2') {
+        lineNotes = (int[])append(lineNotes, i);
       }
     }
   }
@@ -35,21 +59,21 @@ class Parse {
     while (lines[i].length() > 1 && lines[i].charAt(0) == '#') { 
 
       if (lines[i].substring(1, lines[i].indexOf(":")).equals("TITLE")) {
-        String title = lines[i].substring(lines[i].indexOf(":")+1, lines[i].indexOf(";"));
+        title = lines[i].substring(lines[i].indexOf(":")+1, lines[i].indexOf(";"));
       }
       if (lines[i].substring(1, lines[i].indexOf(":")).equals("ARTIST")) {
-        String artist = lines[i].substring(lines[i].indexOf(":")+1, lines[i].indexOf(";"));
+        artist = lines[i].substring(lines[i].indexOf(":")+1, lines[i].indexOf(";"));
       }
       if (lines[i].substring(1, lines[i].indexOf(":")).equals("OFFSET")) {
-        float offset = float(lines[i].substring(lines[i].indexOf(":")+1, lines[i].indexOf(";")));
+        offset = float(lines[i].substring(lines[i].indexOf(":")+1, lines[i].indexOf(";")));
       }
 
       // Assumes bpms are in one line
       if (lines[i].substring(1, lines[i].indexOf(":")).equals("BPMS")) {
-        String bpmString = lines[i].substring(lines[i].indexOf(":")+1, lines[i].indexOf(";"));
-        String[] bpmSubstrings = bpmString.split(",");
+        bpmString = lines[i].substring(lines[i].indexOf(":")+1, lines[i].indexOf(";"));
+        bpmSubstrings = bpmString.split(",");
         for (int j=0; j<bpmSubstrings.length; j++) {
-          float[] split = float(bpmSubstrings[j].split("="));
+          split = float(bpmSubstrings[j].split("="));
           bpms = (float[][])append(bpms, new float[]{split[0], split[1]});
         }
         // Convert the array of strings to an array of floats
@@ -82,22 +106,19 @@ class Parse {
     } 
     while (i < lines.length);
 
-    //console.log(difficulties);
-    boolean selectHardest = true;
-    int selectedDifficulty = 0;
-
     if (selectHardest) {
       selectedDifficulty = difficulties.length - 1;
     } else {
       // user prompt to select difficulty goes here
     }
 
-    int currentLine = int(difficulties[selectedDifficulty][1]);
+    currentLine = int(difficulties[selectedDifficulty][1]);
 
-    /* fixes issue where if at the start of a difficulty, the .sm file devotes a line to "  // measure 1", the program is expecting note information, and produces an error
-     if (lines[currentLine].indexOf('measure') != -1) {
-     currentLine ++;
-     }*/
+    //fixes issue where if at the start of a difficulty, the .sm file devotes a line to "  // measure 1", the program is expecting note information, and produces an error
+    if (lines[currentLine].indexOf("measure") != -1) {
+      currentLine ++;
+    }
+
 
     // begin note conversion loop
     do {
@@ -117,9 +138,8 @@ class Parse {
         notesEnd = false;
       }
 
-      int notesInMeasure = i - currentLine;
+      notesInMeasure = i - currentLine;
 
-      int measureNum = 1;
       // get current bpm  
       // measureNum is initially 1  
       // assumes bpm starts at the beginning of a measure  
@@ -130,22 +150,26 @@ class Parse {
       while (bpms[i][0]/4 > measureNum - 1) {
         i --;
       }
-      float currentBpm = bpms[i][1];
+      currentBpm = bpms[i][1];
 
       // get seconds per notes
-      float secPerNote = 240 / currentBpm / notesInMeasure;
+      secPerNote = 240 / currentBpm / notesInMeasure;
 
-      int linesProcessed = 0;
+      linesProcessed = 0;
 
-      float currentTime = 0;
-      int[] lineNotes = new int[0];
       // put notes into array with time values
       if (currentTime == 0 && linesProcessed == 0) {
         getNotes(currentLine);
-
-        if (lineNotes.length != 0) {
+        if (lineNotes.length != 0) { 
           for (i=0; i < lineNotes.length; i++) {
-            append(notes[lineNotes[i]], 0);
+            if (lineNotes[i] == 0) r0 = append(r0, 0);
+            else if (lineNotes[i] == 1) r1 = append(r1, 0);
+            else if (lineNotes[i] == 2) r2 = append(r2, 0);
+            else if (lineNotes[i] == 3) r3 = append(r3, 0);
+            else if (lineNotes[i] == 4) r4 = append(r4, 0);
+            else if (lineNotes[i] == 5) r5 = append(r5, 0);
+            else if (lineNotes[i] == 6) r6 = append(r6, 0);
+            else if (lineNotes[i] == 7) r7 = append(r7, 0);
           }
         }
 
@@ -159,16 +183,23 @@ class Parse {
 
         if (lineNotes.length != 0) {
           for (i=0; i < lineNotes.length; i++) {
-            append(notes[lineNotes[i]], currentTime);
+            //notes[lineNotes[i]] = (float[][][][][][][])append(notes[lineNotes[i]], currentTime);
+            if (lineNotes[i] == 0) r0 = append(r0, currentTime);
+            else if (lineNotes[i] == 1) r1 = append(r1, currentTime);
+            else if (lineNotes[i] == 2) r2 = append(r2, currentTime);
+            else if (lineNotes[i] == 3) r3 = append(r3, currentTime);
+            else if (lineNotes[i] == 4) r4 = append(r4, currentTime);
+            else if (lineNotes[i] == 5) r5 = append(r5, currentTime);
+            else if (lineNotes[i] == 6) r6 = append(r6, currentTime);
+            else if (lineNotes[i] == 7) r7 = append(r7, currentTime);
           }
         }
         linesProcessed ++;
         currentLine ++;
       }
-
       currentLine ++;
       measureNum ++;
     } while (notesEnd == false);
-    // end stepfile conversion <p></p>   
+    // end stepfile conversion <p></p>
   }
 }
