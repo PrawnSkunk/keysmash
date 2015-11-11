@@ -1,22 +1,22 @@
 class Receptor {
 
-  // fields
+  // Fields
   PVector pos;
   PImage img;
 
-  // constructor
+  // Constructor
   Receptor(float xpos, float ypos) {
     this.pos = new PVector(xpos, ypos);
     img = loadImage("receptor.png");
   }
 
-  // update receptors
+  // Update receptors
   void update() {
     detectCollision();
     drawMe();
   }
 
-  // check if the arrow has hit the receptor
+  // Check if the arrow has hit the receptor
   void detectCollision() {
     for (int i=0; i<arrowAL.size(); i++) {
       if (arrowAL.get(i).hitCharacter(this)) {
@@ -25,12 +25,11 @@ class Receptor {
     }
   }
 
-  // draw receptors
+  // Draw receptors
   void drawMe() {
     pushMatrix();
-    translate(height/2, width/2);
-    imageMode(CENTER); 
-    image(img, pos.x, pos.y);
+    tint(255,col);
+    image(img, height/2+pos.x, width/2+pos.y);
     popMatrix();
   }
 }

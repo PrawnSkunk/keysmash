@@ -1,29 +1,29 @@
 class Arrow {
 
-  // fields
+  // Fields
   PVector pos;
   PVector vel;
   PImage img;
 
-  // constructor
+  // Constructor
   Arrow(float xpos, float ypos, float xvel, float yvel) {
     this.pos = new PVector(xpos, ypos);
     this.vel = new PVector(xvel, yvel);
     img = loadImage("note_red.png");
   }
 
-  // update arrow
+  // Update arrow
   void update() {
     move();
     drawMe();
   }
 
-  // update position with velocity
+  // Update position with velocity
   void move() { 
     pos.add(vel);
   }
 
-  // return true if characters touch eachother's bounding boxes 
+  // Return true if objects touch eachother's bounding boxes 
   boolean hitCharacter(Receptor r)
   {
     boolean xCollision = abs(pos.x - r.pos.x) < 5;
@@ -31,11 +31,11 @@ class Arrow {
     return xCollision && yCollision;
   }
 
-  // draw arrow
+  // Draw arrow
   void drawMe() {
     pushMatrix();
+    tint(255);
     translate(height/2, width/2);
-    imageMode(CENTER); 
     image(img, pos.x, pos.y);
     popMatrix();
   }

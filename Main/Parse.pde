@@ -1,61 +1,63 @@
 class Parse {
 
-  // fields
-  String[] lines;
+  // Fields;
   String[][] difficulties;
-  float[][] bpms;
-  float[][][][][][][][] notes;
-  float[] r0 = new float[0];
-  float[] r1 = new float[0];
-  float[] r2 = new float[0];
-  float[] r3 = new float[0];
-  float[] r4 = new float[0];
-  float[] r5 = new float[0];
-  float[] r6 = new float[0];
-  float[] r7 = new float[0];
-  boolean notesEnd;
-  String title;
-  String artist;
-  float offset;
-  String bpmString;
-  String[] bpmSubstrings;
+  float[][] bpms, notes;
+  String[] lines, bpmSubstrings;
   float[] split;
-  boolean selectHardest = true;
-  int selectedDifficulty;
-  int currentLine;
-  int notesInMeasure;
-  int measureNum = 1;
-  float currentBpm;
-  float secPerNote;
-  int linesProcessed;
-  float currentTime;
-  int[] lineNotes = new int[0];
-  int j=0;
+  int[] lineNotes;
+  String title, artist, bpmString;
+  float offset, currentBpm, secPerNote, currentTime;
+  int selectedDifficulty, currentLine, notesInMeasure, measureNum, linesProcessed, i, j;
+  boolean notesEnd, selectHardest;
 
-  // constructor
+  // Constructor
   Parse() {
-    lines  = new String[0];
-    difficulties = new String[0][0];
-    bpms =  new float[0][0];
-    notes = new float[0][0][0][0][0][0][0][0];
+    this.notes = new float[8][0];
+    this.lines  = new String[0];
+    this.difficulties = new String[0][0];
+    this.bpms =  new float[0][0];
+    this.lineNotes = new int[0];
+    this.selectHardest = true;
+    this.measureNum = 1;
   }
 
-  // functionality
+  // Functionality
+  void run(String path) {
+    lines = loadStrings(path);
+    getInfo();
+    selectDifficulty();
+    noteConversion();
+  }
+
+  // Append note position index to lineNotes[]
   void getNotes(int u) {
     lineNotes = new int[0];  
     for (int i=0; i < lines[u].length(); i++) {   
-      // accept normal notes and hold heads as notes
+
+      // Only accept taps and hold heads as notes
       if (lines[u].charAt(i) == '1' || lines[u].charAt(i) == '2') {
         lineNotes = (int[])append(lineNotes, i);
       }
     }
   }
 
-  void run() {
-    lines = loadStrings("video out e/video out e.sm");
-    int i = 0;
+  void getBpms() {
 
-    // Title, song artist, audio offset, BPMs
+    // Assumes #BPMS:; are one line
+    if (lines[i].substring(1, lines[i].indexOf(":")).equals("BPMS")) {
+      bpmString = lines[i].substring(lines[i].indexOf(":")+1, lines[i].indexOf(";"));
+      bpmSubstrings = bpmString.split(",");
+
+      for (int j=0; j<bpmSubstrings.length; j++) {
+        split = float(bpmSubstrings[j].split("="));
+        bpms = (float[][])append(bpms, new float[]{split[0], split[1]});
+      }
+    }
+  }
+
+  // Get title, song artist, audio offset, BPMs
+  void getInfo() {
     while (lines[i].length() > 1 && lines[i].charAt(0) == '#') { 
 
       if (lines[i].substring(1, lines[i].indexOf(":")).equals("TITLE")) {
@@ -68,27 +70,12 @@ class Parse {
         offset = float(lines[i].substring(lines[i].indexOf(":")+1, lines[i].indexOf(";")));
       }
 
-      // Assumes bpms are in one line
-      if (lines[i].substring(1, lines[i].indexOf(":")).equals("BPMS")) {
-        bpmString = lines[i].substring(lines[i].indexOf(":")+1, lines[i].indexOf(";"));
-        bpmSubstrings = bpmString.split(",");
-        for (int j=0; j<bpmSubstrings.length; j++) {
-          split = float(bpmSubstrings[j].split("="));
-          bpms = (float[][])append(bpms, new float[]{split[0], split[1]});
-        }
-        // Convert the array of strings to an array of floats
-        for (int j=0; j<bpms.length; j++) {
-          for (int k=0; k<2; k++) {
-            bpms[j][k] = (float)bpms[j][k];
-          }
-        }
-
-
-        //console.log(bpms);
-      }
+      getBpms();
       i++;
     }
+  }
 
+  void selectDifficulty() {
     // this loop extracts difficulties in the form: ["difficulty", line number where notes start]
     do {  
 
@@ -118,8 +105,9 @@ class Parse {
     if (lines[currentLine].indexOf("measure") != -1) {
       currentLine ++;
     }
+  }
 
-
+  void noteConversion() {
     // begin note conversion loop
     do {
       // count number of notes in a measure
@@ -162,14 +150,7 @@ class Parse {
         getNotes(currentLine);
         if (lineNotes.length != 0) { 
           for (i=0; i < lineNotes.length; i++) {
-            if (lineNotes[i] == 0) r0 = append(r0, 0);
-            else if (lineNotes[i] == 1) r1 = append(r1, 0);
-            else if (lineNotes[i] == 2) r2 = append(r2, 0);
-            else if (lineNotes[i] == 3) r3 = append(r3, 0);
-            else if (lineNotes[i] == 4) r4 = append(r4, 0);
-            else if (lineNotes[i] == 5) r5 = append(r5, 0);
-            else if (lineNotes[i] == 6) r6 = append(r6, 0);
-            else if (lineNotes[i] == 7) r7 = append(r7, 0);
+            notes[lineNotes[i]] = (float[])append(notes[lineNotes[i]], 0);
           }
         }
 
@@ -183,15 +164,7 @@ class Parse {
 
         if (lineNotes.length != 0) {
           for (i=0; i < lineNotes.length; i++) {
-            //notes[lineNotes[i]] = (float[][][][][][][])append(notes[lineNotes[i]], currentTime);
-            if (lineNotes[i] == 0) r0 = append(r0, currentTime);
-            else if (lineNotes[i] == 1) r1 = append(r1, currentTime);
-            else if (lineNotes[i] == 2) r2 = append(r2, currentTime);
-            else if (lineNotes[i] == 3) r3 = append(r3, currentTime);
-            else if (lineNotes[i] == 4) r4 = append(r4, currentTime);
-            else if (lineNotes[i] == 5) r5 = append(r5, currentTime);
-            else if (lineNotes[i] == 6) r6 = append(r6, currentTime);
-            else if (lineNotes[i] == 7) r7 = append(r7, currentTime);
+            notes[lineNotes[i]] = (float[])append(notes[lineNotes[i]], currentTime);
           }
         }
         linesProcessed ++;
@@ -200,6 +173,5 @@ class Parse {
       currentLine ++;
       measureNum ++;
     } while (notesEnd == false);
-    // end stepfile conversion <p></p>
   }
 }
