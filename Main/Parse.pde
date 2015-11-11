@@ -13,10 +13,12 @@ class Parse {
 
   // Constructor
   Parse() {
-    this.notes = new float[8][0];
-    this.lines  = new String[0];
     this.difficulties = new String[0][0];
     this.bpms =  new float[0][0];
+    this.notes = new float[8][0];
+    this.bpmSubstrings = new String[0];
+    this.lines  = new String[0];
+    this.split = new float[0];
     this.lineNotes = new int[0];
     this.selectHardest = true;
     this.measureNum = 1;

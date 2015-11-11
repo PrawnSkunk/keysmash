@@ -28,7 +28,6 @@ class Receptor {
   // Draw receptors
   void drawMe() {
     pushMatrix();
-    tint(255,col);
     image(img, height/2+pos.x, width/2+pos.y);
     popMatrix();
   }

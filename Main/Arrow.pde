@@ -8,8 +8,12 @@ class Arrow {
   // Constructor
   Arrow(float xpos, float ypos, float xvel, float yvel) {
     this.pos = new PVector(xpos, ypos);
-    this.vel = new PVector(xvel, yvel);
-    img = loadImage("note_red.png");
+    this.vel = new PVector(xvel, yvel); 
+    if (xvel != 0 && yvel != 0) { 
+      img = loadImage("note_blue.png");
+    } else { 
+      img = loadImage("note_red.png");
+    }
   }
 
   // Update arrow
@@ -26,8 +30,8 @@ class Arrow {
   // Return true if objects touch eachother's bounding boxes 
   boolean hitCharacter(Receptor r)
   {
-    boolean xCollision = abs(pos.x - r.pos.x) < 5;
-    boolean yCollision = abs(pos.y - r.pos.y) < 5;
+    boolean xCollision = abs(pos.x - r.pos.x) <= 6;
+    boolean yCollision = abs(pos.y - r.pos.y) <= 6;
     return xCollision && yCollision;
   }
 
