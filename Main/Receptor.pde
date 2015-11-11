@@ -1,12 +1,14 @@
-class Receptor {
+class Receptor { //<>//
 
   // Fields
   PVector pos;
   PImage img;
+  float r;
 
   // Constructor
-  Receptor(float xpos, float ypos) {
+  Receptor(float xpos, float ypos, float r) {
     this.pos = new PVector(xpos, ypos);
+    this.r = r;
     img = loadImage("receptor.png");
   }
 
@@ -28,7 +30,9 @@ class Receptor {
   // Draw receptors
   void drawMe() {
     pushMatrix();
-    image(img, height/2+pos.x, width/2+pos.y);
+    translate(width/2+pos.x, height/2+pos.y);
+    rotate(radians(r*45));
+    image(img, 0, 0);
     popMatrix();
   }
 }
