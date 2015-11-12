@@ -6,9 +6,9 @@ class Parse {
   String[] lines, bpmSubstrings;
   float[] split;
   int[] lineNotes;
-  String title, artist, bpmString;
-  float offset, currentBpm, secPerNote, currentTime;
-  int selectedDifficulty, currentLine, notesInMeasure, measureNum, linesProcessed, i, j;
+  String title, artist, bpmString, credit, subtitle;
+  float duration, offset, currentBpm, secPerNote, currentTime;
+  int maxCombo, selectedDifficulty, currentLine, notesInMeasure, measureNum, linesProcessed, i, j;
   boolean notesEnd, selectHardest;
 
   // Constructor
@@ -30,6 +30,16 @@ class Parse {
     getInfo();
     selectDifficulty();
     noteConversion();
+    noteCount();
+  }
+
+  void noteCount() {
+    for (int i=0; i<8; i++) {
+      for (int j=0; j<notes[i].length; j++) {
+        maxCombo++;
+        if (notes[i][j] > duration) duration = notes[i][j]; 
+      }
+    }
   }
 
   // Append note position index to lineNotes[]
@@ -65,6 +75,12 @@ class Parse {
       if (lines[i].substring(1, lines[i].indexOf(":")).equals("TITLE")) {
         title = lines[i].substring(lines[i].indexOf(":")+1, lines[i].indexOf(";"));
       }
+      if (lines[i].substring(1, lines[i].indexOf(":")).equals("CREDIT")) {
+        credit = lines[i].substring(lines[i].indexOf(":")+1, lines[i].indexOf(";"));
+      }
+      if (lines[i].substring(1, lines[i].indexOf(":")).equals("SUBTITLE")) {
+        subtitle = lines[i].substring(lines[i].indexOf(":")+1, lines[i].indexOf(";"));
+      }
       if (lines[i].substring(1, lines[i].indexOf(":")).equals("ARTIST")) {
         artist = lines[i].substring(lines[i].indexOf(":")+1, lines[i].indexOf(";"));
       }
@@ -86,11 +102,11 @@ class Parse {
         i++;
       }
 
-      if (i+3 < lines.length) {
-        i += 3;
+      if (i+4 < lines.length) {
+        i += 4;
 
         // encountered bizarre error where difficulties array would simply return "C6" or "C5", fixed after PC restart
-        difficulties = (String[][])append(difficulties, new String[]{lines[i].substring(5, lines[i].length()-1), str(i+3)});
+        difficulties = (String[][])append(difficulties, new String[]{lines[i].substring(5, lines[i].length()-1), str(i+4)});
       }
     } 
     while (i < lines.length);
