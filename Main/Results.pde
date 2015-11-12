@@ -9,29 +9,27 @@ class Results extends Screen {
     this.bg = loadImage("bg.jpg");
     this.avatar = avatar();
   }
-  
+
   PImage avatar() {
     PGraphics mask;
     PImage avatar;
     avatar=loadImage("avatar.png");
     avatar.resize(height/9, height/9);
-    mask = createGraphics(avatar.width, avatar.height);//draw the mask object
+    mask = createGraphics(height/9, height/9); //draw the mask object
     mask.beginDraw();
-    mask.ellipse(avatar.width/2, avatar.height/2, avatar.width, avatar.height);
+    mask.ellipse(avatar.width/2, avatar.height/2, height/9, height/9);
     mask.endDraw();
     avatar.mask(mask);
     return avatar;
   }
 
-  void gameSetup() {
+  void screenSetup() {
     sm = new Parse();
     parse();
-    surface.setResizable(false);
     minim.stop();
-    song.close();
   }
 
-  void gameDraw() {
+  void screenDraw() {
 
     image(bg, width/2, height/2, width, height);
     filter(BLUR, 5);

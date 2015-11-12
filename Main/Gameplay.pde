@@ -1,10 +1,10 @@
 class Gameplay extends Screen {
-  
-  Gameplay(){
+
+  Gameplay() {
   }
-  
-    void gameSetup() {
-    surface.setResizable(false);
+
+  void screenSetup() {
+    timeSinceLastStateSwitch = millis();
     arrowAL = new ArrayList<Arrow>();
     receptorAL = new ArrayList<Receptor>();
     transmitterAL = new ArrayList<Transmitter>();
@@ -42,15 +42,16 @@ class Gameplay extends Screen {
       }
     }
   }
-  void gameDraw() {
+  void screenDraw() {
     time = getTime();
-    display();
+    fill(0);
+    rect(0, 0, width, height);
     spawnNotes();
     drawObjects();
     HUD();
   }
-  
-    // Load and play audio
+
+  // Load and play audio
   void loadAudio() {
     song = minim.loadFile(songname+"/"+songname+".mp3");
     song.rewind();
@@ -65,5 +66,4 @@ class Gameplay extends Screen {
       transmitterAL.add(new Transmitter(gridArr[0]*receptorRadius*8, gridArr[1]*receptorRadius*8));
     }
   }
-  
 }

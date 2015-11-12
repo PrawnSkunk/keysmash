@@ -1,77 +1,91 @@
-// Import libraries //<>//
+String songname = "Nocturnal Type"; //<>//
+
+// Import libraries
 import ddf.minim.*;
 import controlP5.*;
 import java.util.Date;
 Minim minim;
 AudioPlayer song;
-ControlP5 cp5;
-boolean toggleValue;
+ControlP5 controlP5;
+Results scn1;
+Gameplay scn2;
+Parse sm;
+Buttons btn;
 
 // Initialize empty array lists
 ArrayList<Arrow> arrowAL;
 ArrayList<Receptor> receptorAL;
 ArrayList<Transmitter> transmitterAL;
-Parse sm;
-Results scn1;
-Gameplay scn2;
 
-
-// Gameplay data
+// Global Variables
 PVector[] grid; // Receptor column position
-char[] keys; // Input keysetup
+int[] rotations; // Receptor rotation position
 boolean[] pressed; // Current keys pressed
-int[] rotations;
-PVector[] transl;
-
-String songname = "video out e";
-float receptorRadius = 72.0;
-float speedmod = height/11;
-float timeSinceLastStateSwitch;
-float time;
-PFont basic;
-PFont basic_bold;
-
-final int GAME_MENU = 0;
+char[] keys; // Input keysetup
+float receptorRadius, speedmod, timeSinceLastStateSwitch, time;
+PFont basic, basic_bold;
+int state;
+final int GAME_SELECT = -1;
+final int GAME_RESULT = 0;
 final int GAME_PLAY = 1;
-int state = GAME_MENU;
 
-void setup() {  
-  basic = createFont("Amelia-Basic", 200); 
-  basic_bold = createFont("Amelia-Basic-Bold", 600); 
+void setup() { 
   size(800, 600);
-  smooth();
-  noStroke();
-  imageMode(CENTER);
-  scn1 = new Results();
-  scn2 = new Gameplay();
-  setupLibraries();
+  setting();
+  stateSetup();
+  btn.buttons();
 }
 
 void draw() {
+  stateDraw();
+}
+
+void setting() {
+  smooth();
+  noStroke();
+  imageMode(CENTER);
+  surface.setResizable(false);
+  scn2 = new Gameplay();
+  scn1 = new Results();
+  minim = new Minim(this);
+  controlP5 = new ControlP5(this);
+  btn = new Buttons();
+  receptorRadius = 72.0;
+  speedmod = height/50;
+  basic = createFont("Amelia-Basic", 200); 
+  basic_bold = createFont("Amelia-Basic-Bold", 600);
+}
+
+void stateSetup() {
   switch(state) {
   case GAME_PLAY: 
-  scn2.gameDraw();
-    
+    scn2.screenSetup();
     break;
-  case GAME_MENU:
-    scn1.gameDraw(); 
+  case GAME_RESULT:
+    scn1.screenSetup(); 
     break;
   }
 }
 
-void toggle_state(boolean theFlag) {
-  if (theFlag==false) {
-    state = GAME_PLAY;
-    scn2.gameSetup();
-    timeSinceLastStateSwitch = millis();
-  } else {
-    state = GAME_MENU;
-    scn1.gameSetup();
+void stateDraw() {
+  switch(state) {
+  case GAME_PLAY: 
+    scn2.screenDraw();
+    break;
+  case GAME_RESULT:
+    scn1.screenDraw(); 
+    break;
   }
 }
 
-void setupLibraries() {
-  minim = new Minim(this);
-  cp5 = new ControlP5(this);
-  cp5.addToggle("toggle_state") .setPosition(0, height-35) .setSize(100, 35) .setValue(true) .setColorForeground (color(#000000, 150)) .setColorActive(color(#000000, 150)) .setColorBackground(color(#333333, 150));
+void gameplay() {
+  if (millis()<1000) return; // Flow will leave the function if called within 1 second of startup
+  state = GAME_PLAY;
+  scn2.screenSetup();
+}
+
+void results() {
+  if (millis()<1000) return;
+  state = GAME_RESULT;
+  scn1.screenSetup();
 }

@@ -37,7 +37,7 @@ class Parse {
     for (int i=0; i<8; i++) {
       for (int j=0; j<notes[i].length; j++) {
         maxCombo++;
-        if (notes[i][j] > duration) duration = notes[i][j]; 
+        if (notes[i][j] > duration) duration = notes[i][j];
       }
     }
   }
