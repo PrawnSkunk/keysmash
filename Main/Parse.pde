@@ -168,7 +168,7 @@ class Parse {
         getNotes(currentLine);
         if (lineNotes.length != 0) { 
           for (i=0; i < lineNotes.length; i++) {
-            notes[lineNotes[i]] = (float[])append(notes[lineNotes[i]], 0);
+            notes = (float[][])append(notes, new float[]{0, lineNotes[i]});
           }
         }
 
@@ -177,12 +177,15 @@ class Parse {
       } 
 
       while (linesProcessed < notesInMeasure) {
-        currentTime += secPerNote;
+        currentTime += secPerNote; // changes from secPerNote
         getNotes(currentLine);
 
         if (lineNotes.length != 0) {
           for (i=0; i < lineNotes.length; i++) {
-            notes[lineNotes[i]] = (float[])append(notes[lineNotes[i]], currentTime);
+            //println(linesProcessed+":"+currentTime+":"+lineNotes[i]);
+            if (currentTime > 0) {
+              notes = (float[][])append(notes, new float[]{currentTime, lineNotes[i]});
+            }
           }
         }
         linesProcessed ++;
@@ -190,6 +193,7 @@ class Parse {
       }
       currentLine ++;
       measureNum ++;
-    } while (notesEnd == false);
+    } 
+    while (notesEnd == false);
   }
 }

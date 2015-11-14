@@ -4,7 +4,6 @@ class Gameplay extends Screen {
   }
 
   void screenSetup() {
-    timeSinceLastStateSwitch = millis();
     arrowAL = new ArrayList<Arrow>();
     receptorAL = new ArrayList<Receptor>();
     transmitterAL = new ArrayList<Transmitter>();
@@ -16,6 +15,7 @@ class Gameplay extends Screen {
     parse();
     gridSetup();
     loadAudio();
+    timeSinceLastStateSwitch = float(millis());
   }
 
   void HUD() {
@@ -25,19 +25,25 @@ class Gameplay extends Screen {
     rect(width-maxWidth/2, 0, maxWidth/2, height);
 
     fill(50, 50, 255, 100);
-    rect(0, 0, maxWidth/2, width*(getTime()/sm.duration));
-    rect(width-maxWidth/2, 0, maxWidth/2, width*(getTime()/sm.duration));
+    rect(0, 0, maxWidth/2, width*(getTime()/sm.duration*1000));
+    rect(width-maxWidth/2, 0, maxWidth/2, width*(getTime()/sm.duration*1000));
   }
 
-  // Execute note data
+  // Execute note data to spawn note at respective transmitter
   void spawnNotes() {
-    for (int i=0; i<grid.length; i++) {
-      for (int j=0; j<sm.notes[i].length; j++) {
-        if (sm.notes[i][j] - time < 0.00833 && sm.notes[i][j] - time > -0.00833) {
-          // spawn note at respective transmitter
-          float[] gridArr = grid[i].array();
-          arrowAL.add(new Arrow(gridArr[0]*receptorRadius*8, gridArr[1]*receptorRadius*8, -gridArr[0]*speedmod, -gridArr[1]*speedmod, rotations[i]));
-          sm.notes[i][j] = 0;
+
+    // for the length of the array (sm.notes = [8][1.1248313][3.0])
+    for (int i=0; i<sm.notes.length; i++) {
+
+      if (sm.notes[i].length > 0 && sm.notes[i][0] > 0) {
+
+        index = (int)sm.notes[i][1];
+        float[] gridArr = grid[index].array();
+
+        if (time - sm.notes[i][0]*1000 < 0 && time - sm.notes[i][0]*1000 > -1000) {  
+          //println((float(millis())-timeSinceLastStateSwitch)+(sm.offset*1000));
+          arrowAL.add(new Arrow(gridArr[0]*receptorRadius*8, gridArr[1]*receptorRadius*8, -gridArr[0]*speedmod, -gridArr[1]*speedmod, rotations[index]));
+          sm.notes[i][0] = 0;
         }
       }
     }
@@ -54,6 +60,7 @@ class Gameplay extends Screen {
   // Load and play audio
   void loadAudio() {
     song = minim.loadFile(songname+"/"+songname+".mp3");
+    tick = minim.loadFile("notetick.mp3");
     song.rewind();
     song.play();
   }

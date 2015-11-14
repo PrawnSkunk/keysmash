@@ -32,7 +32,7 @@ class Results extends Screen {
   void screenDraw() {
 
     image(bg, width/2, height/2, width, height);
-    filter(BLUR, 5);
+    //filter(BLUR, 5);
 
     fill(0, 150); 
     rect(0, 0, width, height*0.15);

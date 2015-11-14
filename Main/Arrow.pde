@@ -12,8 +12,8 @@ class Arrow {
     this.vel = new PVector(xvel, yvel); 
     this.r = r;
     if (xvel != 0 && yvel != 0) { 
-      //img = loadImage("note_blue.png");
-      img = loadImage("note_red.png");
+      img = loadImage("note_blue.png");
+      //img = loadImage("note_red.png");
     } else { 
       img = loadImage("note_red.png");
     }

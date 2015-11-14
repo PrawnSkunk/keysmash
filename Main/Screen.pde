@@ -29,8 +29,9 @@ class Screen {
   }
 
   // Current time
+  // Make X smaller in X*framecount for the notes to arrive ealier
   float getTime() {
-    float currTime = (float)millis()-timeSinceLastStateSwitch;
-    return (float)((currTime/1000)+sm.offset-0.2);
+    float currTime = (float(millis())-timeSinceLastStateSwitch)+(sm.offset*1000)+manualOffset;//+(-0.5*frameCount);
+    return (float)((currTime));
   }
 }

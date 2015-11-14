@@ -23,6 +23,7 @@ class Receptor { //<>//
     for (int i=0; i<arrowAL.size(); i++) {
       if (arrowAL.get(i).hitCharacter(this)) {
         arrowAL.remove(i);
+        //println(((float(millis())-timeSinceLastStateSwitch)+(sm.offset*1000))/1000);
       }
     }
   }
