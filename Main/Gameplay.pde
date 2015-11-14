@@ -1,4 +1,6 @@
 class Gameplay extends Screen {
+  
+  int count;
 
   Gameplay() {
   }
@@ -31,10 +33,10 @@ class Gameplay extends Screen {
 
   // Execute note data to spawn note at respective transmitter
   void spawnNotes() {
-
+//println(sm.notes.length);
     // for the length of the array (sm.notes = [8][1.1248313][3.0])
-    for (int i=0; i<sm.notes.length; i++) {
-
+    for (int i=count; i<sm.notes.length; i++) {
+      
       if (sm.notes[i].length > 0 && sm.notes[i][0] > 0) {
 
         index = (int)sm.notes[i][1];
@@ -43,7 +45,8 @@ class Gameplay extends Screen {
         if (time - sm.notes[i][0]*1000 < 0 && time - sm.notes[i][0]*1000 > -1000) {  
           //println((float(millis())-timeSinceLastStateSwitch)+(sm.offset*1000));
           arrowAL.add(new Arrow(gridArr[0]*receptorRadius*8, gridArr[1]*receptorRadius*8, -gridArr[0]*speedmod, -gridArr[1]*speedmod, rotations[index]));
-          sm.notes[i][0] = 0;
+          sm.notes[i][0] = 0; 
+          count++;
         }
       }
     }

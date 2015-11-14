@@ -13,6 +13,7 @@ class Screen {
 
   // Parse note data
   void parse() {
+    sm = new Parse();
     sm.run(songname+"/"+songname+".sm");
   }
 

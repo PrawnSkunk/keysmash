@@ -48,9 +48,6 @@ void setup() {
   setting();
   stateSetup();
   btn.buttons();
-
-  //for (int i =0; i < sm.notes.length; i++){if (sm.notes[i].length > 0) println(sm.notes[i][0]);}
-  
 }
 
 void draw() {
@@ -63,7 +60,7 @@ void setting() {
   smooth();
   noStroke();
   imageMode(CENTER);
-  surface.setResizable(true);
+  surface.setResizable(false);
   scn2 = new Gameplay();
   scn1 = new Results();
   minim = new Minim(this);
