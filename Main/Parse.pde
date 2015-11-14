@@ -6,8 +6,8 @@ class Parse {
   String[] lines, bpmSubstrings;
   float[] split;
   int[] lineNotes;
-  String title, artist, bpmString, credit, subtitle;
-  float duration, offset, currentBpm, secPerNote, currentTime;
+  String title, artist, bpmString, credit, subtitle, background;
+  float duration, offset, currentBpm, secPerNote, currentTime, sampleStart, sampleLength;
   int maxCombo, selectedDifficulty, currentLine, notesInMeasure, measureNum, linesProcessed, i, j;
   boolean notesEnd, selectHardest;
 
@@ -34,12 +34,10 @@ class Parse {
   }
 
   void noteCount() {
-    for (int i=0; i<8; i++) {
-      for (int j=0; j<notes[i].length; j++) {
-        maxCombo++;
-        if (notes[i][j] > duration) duration = notes[i][j];
+      for (int j=0; j<notes.length; j++) {
+        if (notes[j].length > 0) maxCombo++;
+        //if (notes[i][j] > duration) duration = notes[i][j];
       }
-    }
   }
 
   // Append note position index to lineNotes[]
@@ -75,17 +73,26 @@ class Parse {
       if (lines[i].substring(1, lines[i].indexOf(":")).equals("TITLE")) {
         title = lines[i].substring(lines[i].indexOf(":")+1, lines[i].indexOf(";"));
       }
-      if (lines[i].substring(1, lines[i].indexOf(":")).equals("CREDIT")) {
-        credit = lines[i].substring(lines[i].indexOf(":")+1, lines[i].indexOf(";"));
-      }
       if (lines[i].substring(1, lines[i].indexOf(":")).equals("SUBTITLE")) {
         subtitle = lines[i].substring(lines[i].indexOf(":")+1, lines[i].indexOf(";"));
       }
       if (lines[i].substring(1, lines[i].indexOf(":")).equals("ARTIST")) {
         artist = lines[i].substring(lines[i].indexOf(":")+1, lines[i].indexOf(";"));
       }
+      if (lines[i].substring(1, lines[i].indexOf(":")).equals("CREDIT")) {
+        credit = lines[i].substring(lines[i].indexOf(":")+1, lines[i].indexOf(";"));
+      }
       if (lines[i].substring(1, lines[i].indexOf(":")).equals("OFFSET")) {
         offset = float(lines[i].substring(lines[i].indexOf(":")+1, lines[i].indexOf(";")));
+      }
+      if (lines[i].substring(1, lines[i].indexOf(":")).equals("BACKGROUND")) {
+        background = lines[i].substring(lines[i].indexOf(":")+1, lines[i].indexOf(";"));
+      }
+      if (lines[i].substring(1, lines[i].indexOf(":")).equals("SAMPLESTART")) {
+        sampleStart = float(lines[i].substring(lines[i].indexOf(":")+1, lines[i].indexOf(";")));
+      }
+      if (lines[i].substring(1, lines[i].indexOf(":")).equals("SAMPLELENGTH")) {
+        sampleLength = float(lines[i].substring(lines[i].indexOf(":")+1, lines[i].indexOf(";")));
       }
 
       getBpms();

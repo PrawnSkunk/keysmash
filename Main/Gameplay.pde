@@ -59,7 +59,9 @@ class Gameplay extends Screen {
 
   // Load and play audio
   void loadAudio() {
+    minim.stop();
     song = minim.loadFile(songname+"/"+songname+".mp3");
+    //trackLength = song.length();
     tick = minim.loadFile("notetick.mp3");
     song.rewind();
     song.play();

@@ -41,14 +41,17 @@ final int GAME_PLAY = 1;
 void setup() { 
   size(800, 600);
   frameRate(FPS);
+  
+  sm = new Parse();
+  sm.run(songname+"/"+songname+".sm");
+  
   setting();
   stateSetup();
   btn.buttons();
-  
+
   //for (int i =0; i < sm.notes.length; i++){if (sm.notes[i].length > 0) println(sm.notes[i][0]);}
   
 }
-
 
 void draw() {
   speedmod = height/50;

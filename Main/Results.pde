@@ -3,17 +3,20 @@ class Results extends Screen {
   // Fields
   PImage bg;
   PImage avatar;
+  PGraphics mask;
+  int cue, duration;
+  boolean isplaying = true;
 
   // Constructor
   Results() {
-    this.bg = loadImage("bg.jpg");
-    this.avatar = avatar();
+    this.bg = loadImage(sm.title+"/"+sm.background);
+    this.avatar = loadImage("avatar.png");
+    this.cue = (int)(sm.sampleStart*1000);
+    this.duration = (int)(sm.sampleLength*1000);
   }
 
-  PImage avatar() {
-    PGraphics mask;
-    PImage avatar;
-    avatar=loadImage("avatar.png");
+  PImage getAvatar() {
+    avatar = loadImage("avatar.png");
     avatar.resize(height/9, height/9);
     mask = createGraphics(height/9, height/9); //draw the mask object
     mask.beginDraw();
@@ -24,12 +27,39 @@ class Results extends Screen {
   }
 
   void screenSetup() {
+    // parse for avatar information
     sm = new Parse();
     parse();
     minim.stop();
+    song = minim.loadFile(songname+"/"+songname+".mp3");
+    fadeIn();
   }
 
+  void fadeIn() {
+    println("fading in @ "+song.position()+"!");
+    song.pause();
+    song.rewind();
+    song.setLoopPoints(cue, cue+duration);
+    song.shiftGain(-80.0, 0, 3000);
+    song.play();
+    song.loop();
+  }
+  void fadeOut() {
+    println("fading out @ "+song.position()+"!");
+    song.shiftGain(0, -80.0, 4000);
+  }
+  
   void screenDraw() {
+
+    if (isplaying == true && song.position() > cue+duration-4000) {
+        isplaying = false;
+        fadeOut();
+    }
+    // start fading in early
+    if (isplaying == false && song.position() > cue+duration-3000) {
+        isplaying = true;
+        fadeIn();
+    }
 
     image(bg, width/2, height/2, width, height);
     //filter(BLUR, 5);
@@ -40,11 +70,16 @@ class Results extends Screen {
     fill(0, 100); 
     rect(0, height*0.15, width, height);
 
+    //stroke(255);
+    //ellipseMode(CENTER);
+    //strokeWeight(0);
+    //ellipse(width/2, height*0.15, height/9, height/9);
     stroke(255);
-    strokeWeight(width/220);
+    ellipseMode(CENTER);
+    strokeWeight(4);
     ellipse(width/2, height*0.15, height/9, height/9);
+    image(getAvatar(), width/2, height*0.15);  
     noStroke();
-    image(avatar, width/2, height*0.15);  
 
     fill(255, 100); 
     rectMode(CENTER);
