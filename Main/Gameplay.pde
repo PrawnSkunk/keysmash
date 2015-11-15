@@ -6,6 +6,7 @@ class Gameplay extends Screen {
   }
 
   void screenSetup() {
+    super.screenSetup();
     arrowAL = new ArrayList<Arrow>();
     receptorAL = new ArrayList<Receptor>();
     transmitterAL = new ArrayList<Transmitter>();
@@ -22,18 +23,17 @@ class Gameplay extends Screen {
 
   void HUD() {
     float maxWidth = width-height;
-    fill(25);
-    rect(0, 0, maxWidth/2, height);
-    rect(width-maxWidth/2, 0, maxWidth/2, height);
-
-    fill(50, 50, 255, 100);
-    rect(0, 0, maxWidth/2, width*(getTime()/sm.duration*1000));
-    rect(width-maxWidth/2, 0, maxWidth/2, width*(getTime()/sm.duration*1000));
+    fill(75);
+    rect(0, 0, maxWidth/2.2+1, height);
+    rect(width-maxWidth/2.2-1, 0, maxWidth/2.2, height);
+    fill(15);
+    rect(0, 0, maxWidth/2.2, height);
+    rect(width-maxWidth/2.2, 0, maxWidth/2.2, height);
   }
 
   // Execute note data to spawn note at respective transmitter
   void spawnNotes() {
-//println(sm.notes.length);
+
     // for the length of the array (sm.notes = [8][1.1248313][3.0])
     for (int i=count; i<sm.notes.length; i++) {
       
@@ -52,9 +52,9 @@ class Gameplay extends Screen {
     }
   }
   void screenDraw() {
+    super.screenDraw();
     time = getTime();
-    fill(0);
-    rect(0, 0, width, height);
+    background(0);
     spawnNotes();
     drawObjects();
     HUD();
@@ -65,7 +65,6 @@ class Gameplay extends Screen {
     minim.stop();
     song = minim.loadFile("/songs/"+songname+"/"+songname+".mp3");
     //trackLength = song.length();
-    tick = minim.loadFile("/assets/notetick.mp3");
     song.rewind();
     song.play();
   }

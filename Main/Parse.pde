@@ -6,7 +6,7 @@ class Parse {
   String[] lines, bpmSubstrings;
   float[] split;
   int[] lineNotes;
-  String title, artist, bpmString, credit, subtitle, background;
+  String title, artist, bpmString, credit, subtitle;
   float duration, offset, currentBpm, secPerNote, currentTime, sampleStart, sampleLength;
   int maxCombo, selectedDifficulty, currentLine, notesInMeasure, measureNum, linesProcessed, i, j;
   boolean notesEnd, selectHardest;
@@ -85,7 +85,8 @@ class Parse {
         offset = float(lines[i].substring(lines[i].indexOf(":")+1, lines[i].indexOf(";")));
       }
       if (lines[i].substring(1, lines[i].indexOf(":")).equals("BACKGROUND")) {
-        background = lines[i].substring(lines[i].indexOf(":")+1, lines[i].indexOf(";"));
+        String bgString = lines[i].substring(lines[i].indexOf(":")+1, lines[i].indexOf(";"));
+        background = loadImage("/songs/"+title+"/"+bgString);
       }
       if (lines[i].substring(1, lines[i].indexOf(":")).equals("SAMPLESTART")) {
         sampleStart = float(lines[i].substring(lines[i].indexOf(":")+1, lines[i].indexOf(";")));

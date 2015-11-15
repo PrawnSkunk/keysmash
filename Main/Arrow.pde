@@ -1,5 +1,5 @@
 class Arrow {
-
+  
   // Fields
   PVector pos;
   PVector vel;

@@ -8,7 +8,6 @@ import java.util.Arrays;
 File songDir;
 Minim minim;
 AudioPlayer song;
-AudioPlayer tick;
 ControlP5 controlP5;
 Buttons btn;
 Parse sm;
@@ -34,10 +33,17 @@ String[] songList; // List of folders in /data/songs/
 String songname;
 float receptorRadius, speedmod, timeSinceLastStateSwitch, time, manualOffset;
 PFont basic, basic_bold, debug;
+PImage background;
 int index, state;
+int cue, duration;
+boolean isplaying;
+float transitionTimerIn, transitionTimerOut, transitionTimerInMax, transitionTimerOutMax;
+boolean canSetupState = false;
+boolean canTransitionIn = true;
 
 void setup() { 
   size(800, 600);
+  frameRate(60);
   setupSongs();
   setupSettings();
   setupState();
@@ -45,8 +51,19 @@ void setup() {
 }
 
 void draw() {
+  setupStateFlag();
   drawCalibrate();
   drawState();
+  transitionIn();
+  transitionOut();
+}
+
+// Is transition out done?
+void setupStateFlag(){
+   if (canSetupState == true) {
+    setupState();
+    canSetupState = false;
+  } 
 }
 
 // Calibrate events to window dimensions
@@ -62,6 +79,21 @@ void setupSongs() {
   songname = songList[0];
   sm = new Parse();
   sm.run("/songs/"+songname+"/"+songname+".sm");
+}
+
+void transitionIn() {
+  if (transitionTimerIn>0) {
+    fill(0, transitionTimerIn*(255/transitionTimerInMax));
+    rect(0, 0, width, height);
+    transitionTimerIn--;
+  }
+}
+void transitionOut() {
+  if (transitionTimerOut>0) {
+    fill(0, 255-transitionTimerOut*(255/transitionTimerOutMax));
+    rect(0, 0, width, height);
+    transitionTimerOut--;
+  }
 }
 
 // Main skecth settings
@@ -92,6 +124,9 @@ void setupSettings() {
 
   // Space between receptors
   receptorRadius = 72.0;
+  
+  // transition in/out times (in frames)
+  transitionTimerInMax = transitionTimerOutMax = 20;
 }
 
 // Called once by setup()
@@ -114,37 +149,33 @@ void setupState() {
 
 // Called every frame by draw()
 void drawState() {
-  switch(state) {
-  case GAME_MENU:
-    screenAL.get(GAME_MENU).screenDraw();
-    break;
-  case GAME_SELECT:
-    screenAL.get(GAME_SELECT).screenDraw();
-    break;
-  case GAME_PLAY: 
-    screenAL.get(GAME_PLAY).screenDraw();
-    break;
-  case GAME_RESULT:
-    screenAL.get(GAME_RESULT).screenDraw(); 
-    break;
+  if (transitionTimerOut == 0) {
+    switch(state) {
+    case GAME_MENU:
+      screenAL.get(GAME_MENU).screenDraw();
+      break;
+    case GAME_SELECT:
+      screenAL.get(GAME_SELECT).screenDraw();
+      break;
+    case GAME_PLAY: 
+      screenAL.get(GAME_PLAY).screenDraw();
+      break;
+    case GAME_RESULT:
+      screenAL.get(GAME_RESULT).screenDraw(); 
+      break;
+    }
   }
+}
+
+void transition(int s) {
+  transitionTimerOut = transitionTimerOutMax;
+  state = s;
+  canSetupState = true;
 }
 
 // Called by .activateEvent(true) in Buttons class
 void controlEvent(ControlEvent theControlEvent) {
   if (theControlEvent.isTab()) {
-    if (theControlEvent.getTab().getId() == GAME_MENU) {
-      state = GAME_MENU;
-      screenAL.get(GAME_MENU).screenSetup();
-    } else if (theControlEvent.getTab().getId() == GAME_SELECT) {
-      state = GAME_SELECT;
-      screenAL.get(GAME_SELECT).screenSetup();
-    } else if (theControlEvent.getTab().getId() == GAME_PLAY) {
-      state = GAME_PLAY;
-      screenAL.get(GAME_PLAY).screenSetup();
-    } else  if (theControlEvent.getTab().getId() == GAME_RESULT) {
-      state = GAME_RESULT;
-      screenAL.get(GAME_RESULT).screenSetup();
-    }
+    transition(theControlEvent.getTab().getId());
   }
 }
