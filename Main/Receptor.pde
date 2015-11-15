@@ -9,7 +9,7 @@ class Receptor { //<>//
   Receptor(float xpos, float ypos, float r) {
     this.pos = new PVector(xpos, ypos);
     this.r = r;
-    img = loadImage("receptor.png");
+    img = loadImage("/assets/note_receptor.png");
   }
 
   // Update receptors

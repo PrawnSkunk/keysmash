@@ -36,7 +36,6 @@ class Parse {
   void noteCount() {
       for (int j=0; j<notes.length; j++) {
         if (notes[j].length > 0) maxCombo++;
-        //if (notes[i][j] > duration) duration = notes[i][j];
       }
   }
 

@@ -10,8 +10,8 @@ class Results extends Screen {
   Results() {
     this.cue = (int)(sm.sampleStart*1000);
     this.duration = (int)(sm.sampleLength*1000);
-    this.bg = loadImage(sm.title+"/"+sm.background);
-    this.avatar = loadImage("avatar.png");
+    this.bg = loadImage("/songs/"+sm.title+"/"+sm.background);
+    this.avatar = loadImage("/assets/avatar.png");
   }
 
   /********* MAIN FUNCTIONS *********/
@@ -29,7 +29,7 @@ class Results extends Screen {
   /********* JUKEBOX *********/
 
   void loadMusic() {
-    song = minim.loadFile(songname+"/"+songname+".mp3");
+    song = minim.loadFile("/songs/"+songname+"/"+songname+".mp3");
     // Set loop points if there is no sample cue in .sm data
     if (cue == 0) {
       cue = 46*1000;
@@ -70,7 +70,7 @@ class Results extends Screen {
 
   // Ellipse mask avatar image
   PImage maskAvatar() {
-    avatar = loadImage("avatar.png");
+    avatar = loadImage("assets/avatar.png");
     avatar.resize(height/9, height/9);
     mask = createGraphics(height/9, height/9); //draw the mask object
     mask.beginDraw();

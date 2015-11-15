@@ -1,145 +1,150 @@
-String songname = "Nocturnal Type"; //<>//
-//String songname = "video out e";
-int FPS = 60;
-float manualOffset;
-
-// Import libraries
+// Import libraries //<>//
 import ddf.minim.*;
 import controlP5.*;
 import java.util.Date;
 import java.util.Arrays;
 
+// Declare class objects
+File songDir;
 Minim minim;
 AudioPlayer song;
 AudioPlayer tick;
 ControlP5 controlP5;
-Menu scn0;
-Select scn1;
-Gameplay scn2;
-Results scn3;
-Parse sm;
 Buttons btn;
+Parse sm;
 
-// Initialize empty array lists
+// Declare array lists
 ArrayList<Arrow> arrowAL;
 ArrayList<Receptor> receptorAL;
 ArrayList<Transmitter> transmitterAL;
+ArrayList<Screen> screenAL;
 
-// Global Variables
-float[][] noteArr = new float[0][0];
-PVector[] grid; // Receptor column position
-int[] rotations; // Receptor rotation position
-boolean[] pressed; // Current keys pressed
-char[] keys; // Input keysetup
-float receptorRadius, speedmod, timeSinceLastStateSwitch, time;
-PFont basic, basic_bold, debug;
-int state;
-int index;
-int fpsCount;
+// Initialize game state constants
 final int GAME_MENU = 0;
 final int GAME_SELECT = 1;
 final int GAME_PLAY = 2;
 final int GAME_RESULT = 3;
 
+// Declare common global variables
+PVector[] grid; // Receptor column position
+int[] rotations; // Receptor rotation position
+boolean[] pressed; // Current keys pressed
+char[] keys; // Input keybinds
+String[] songList; // List of folders in /data/songs/
+String songname;
+float receptorRadius, speedmod, timeSinceLastStateSwitch, time, manualOffset;
+PFont basic, basic_bold, debug;
+int index, state;
+
 void setup() { 
   size(800, 600);
-  frameRate(FPS);
-
-  sm = new Parse();
-  sm.run(songname+"/"+songname+".sm");
-
-  setting();
-  stateSetup();
-  btn.buttons();
-  btn.addTabs();
+  setupSongs();
+  setupSettings();
+  setupState();
+  btn.setupButtons();
 }
 
 void draw() {
-  speedmod = height/50;
-  manualOffset = -speedmod*58.333; //-700 offset with 600px height
-  stateDraw();
+  drawCalibrate();
+  drawState();
 }
 
-void setting() {
+// Calibrate events to window dimensions
+void drawCalibrate() {
+  speedmod = height/50;
+  manualOffset = -speedmod*58.333; //-700 offset with 600px height
+}
+
+// Load songs directory and run parser
+void setupSongs() {
+  songDir = new File(dataPath("/songs/"));
+  songList = songDir.list();
+  songname = songList[0];
+  sm = new Parse();
+  sm.run("/songs/"+songname+"/"+songname+".sm");
+}
+
+// Main skecth settings
+void setupSettings() { 
   smooth();
   noStroke();
   imageMode(CENTER);
-  surface.setResizable(false);
-  scn0 = new Menu();
-  scn1 = new Select();
-  scn2 = new Gameplay();
-  scn3 = new Results();
+
+  // Can the window be resized?
+  surface.setResizable(false); 
+
+  // Objects must be in setup()
   minim = new Minim(this);
   controlP5 = new ControlP5(this);
   btn = new Buttons();
+
+  // Setup states
+  screenAL = new ArrayList<Screen>();
+  screenAL.add(new Menu());
+  screenAL.add(new Select());
+  screenAL.add(new Gameplay());
+  screenAL.add(new Results());
+
+  // Load fonts
+  debug = createFont("/assets/Amelia-Basic.ttf", 18, true); 
+  basic = createFont("/assets/Amelia-Basic.ttf", 200, true); 
+  basic_bold = createFont("/assets/Amelia-Basic-Bold.ttf", 600, true);
+
+  // Space between receptors
   receptorRadius = 72.0;
-  debug = createFont("Amelia-Basic", 18, true); 
-  basic = createFont("Amelia-Basic", 200, true); 
-  basic_bold = createFont("Amelia-Basic-Bold", 600, true);
 }
 
-void stateSetup() {
+// Called once by setup()
+void setupState() {
   switch(state) {
   case GAME_MENU:
-    scn0.screenSetup();
+    screenAL.get(GAME_MENU).screenSetup();
     break;
   case GAME_SELECT:
-    scn1.screenSetup();
+    screenAL.get(GAME_SELECT).screenSetup();
     break;
   case GAME_PLAY: 
-    scn2.screenSetup();
+    screenAL.get(GAME_PLAY).screenSetup();
     break;
   case GAME_RESULT:
-    scn1.screenSetup(); 
+    screenAL.get(GAME_RESULT).screenSetup(); 
     break;
   }
 }
 
-void stateDraw() {
+// Called every frame by draw()
+void drawState() {
   switch(state) {
   case GAME_MENU:
-    scn0.screenDraw();
+    screenAL.get(GAME_MENU).screenDraw();
     break;
   case GAME_SELECT:
-    scn1.screenDraw();
+    screenAL.get(GAME_SELECT).screenDraw();
     break;
   case GAME_PLAY: 
-    scn2.screenDraw();
+    screenAL.get(GAME_PLAY).screenDraw();
     break;
   case GAME_RESULT:
-    scn3.screenDraw(); 
+    screenAL.get(GAME_RESULT).screenDraw(); 
     break;
   }
 }
 
+// Called by .activateEvent(true) in Buttons class
 void controlEvent(ControlEvent theControlEvent) {
   if (theControlEvent.isTab()) {
     if (theControlEvent.getTab().getId() == GAME_MENU) {
       state = GAME_MENU;
-      scn0.screenSetup();
+      screenAL.get(GAME_MENU).screenSetup();
     } else if (theControlEvent.getTab().getId() == GAME_SELECT) {
       state = GAME_SELECT;
-      scn1.screenSetup();
+      screenAL.get(GAME_SELECT).screenSetup();
     } else if (theControlEvent.getTab().getId() == GAME_PLAY) {
       state = GAME_PLAY;
-      scn2.screenSetup();
+      screenAL.get(GAME_PLAY).screenSetup();
     } else  if (theControlEvent.getTab().getId() == GAME_RESULT) {
       state = GAME_RESULT;
-      scn3.screenSetup();
+      screenAL.get(GAME_RESULT).screenSetup();
     }
   }
 }
-
-/*
-void gameplay() {
- if (millis()<1000) return; // Flow will leave the function if called within 1 second of startup
- state = GAME_PLAY;
- scn2.screenSetup();
- }
- 
- void results() {
- if (millis()<1000) return;
- state = GAME_RESULT;
- scn1.screenSetup();
- }
- */

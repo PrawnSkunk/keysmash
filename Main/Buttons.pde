@@ -3,59 +3,41 @@ class Buttons {
   Buttons() {
   }
 
-  void buttons() {
-    //addButtonGameplay();
-    //addButtonResults();
-  }
-
-  void addButtonGameplay() {
-    controlP5.addButton("gameplay")  
-      .setValue(0)
-      .setPosition(0, height-30)
-      .setSize(120, 30)
-      .setColorBackground(color(255, 25))
-      .setColorForeground(color(255, 50))
-      .setColorActive(color(255, 150))
-      .setColorLabel(color(255, 255));
-  }
-  void addButtonResults() {
-    controlP5.addButton("results") 
-      .setValue(0)
-      .setPosition(120, height-30)
-      .setSize(120, 30)
-      .setColorBackground(color(255, 255, 255, 25))
-      .setColorForeground(color(255, 255, 255, 50))
-      .setColorActive(color(255, 255, 255, 150))
-      .setColorLabel(color(255, 255, 255, 255));
-  }
-
-  void addTabs() {
+  void setupButtons() {
 
     // By default all controllers are stored inside Tab 'default' 
     controlP5.addTab("Song Selection");
     controlP5.addTab("Gameplay");
     controlP5.addTab("Results Screen");
-
-    // if you want to receive a controlEvent when
-    // a  tab is clicked, use activeEvent(true)
+    controlP5.setColorActive(color(255, 255, 255, 150));
+    controlP5.setColorBackground(color(255, 25));
+    controlP5.setColorForeground(color(255, 50));
+    controlP5.setColorActive(color(255, 150));
+    controlP5.setPosition(0,height-30);
 
     controlP5.getTab("default")
-      .activateEvent(true)
+      .setWidth(100)
+      .setHeight(30) 
+      .activateEvent(true) // receives a controlEvent
       .setLabel("Main Menu")
-      .setId(0)
-      ;
-
+      .setId(0);
+      
     controlP5.getTab("Song Selection")
+      .setWidth(100)
+      .setHeight(30) 
       .activateEvent(true)
-      .setId(1)
-      ;
+      .setId(1);
+      
     controlP5.getTab("Gameplay")
+      .setWidth(100)
+      .setHeight(30) 
       .activateEvent(true)
-      .setId(2)
-      ;
+      .setId(2);
+      
     controlP5.getTab("Results Screen")
+      .setWidth(100)
+      .setHeight(30) 
       .activateEvent(true)
-      .setId(3)
-      ;
+      .setId(3);
   }
 }

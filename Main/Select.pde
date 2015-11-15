@@ -1,5 +1,6 @@
 class Select extends Screen {
 
+  // Constructor
   Select() {
   }
 
@@ -10,6 +11,9 @@ class Select extends Screen {
     display();
   }
   void display() {
-    background(0);
+    background(100);
+    textAlign(CENTER,CORNER);
+    textFont(basic, height/5);
+    text("Song Select",width/2,height/2);
   }
 }
