@@ -1,6 +1,6 @@
-class Select extends Screen {
+class Menu extends Screen {
 
-  Select() {
+  Menu() {
   }
 
   void screenSetup() {
@@ -9,7 +9,7 @@ class Select extends Screen {
   void screenDraw() {
     display();
   }
-  void display() {
-    background(0);
+  void display(){
+    background(50);
   }
 }

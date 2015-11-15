@@ -17,6 +17,7 @@ class Results extends Screen {
   /********* MAIN FUNCTIONS *********/
 
   void screenSetup() {
+    minim.stop();
     loadMusic();
   }
 
