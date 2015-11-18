@@ -18,7 +18,7 @@ class Screen {
   // Parse note data
   void parse() {
     sm = new Parse();
-    sm.run("/songs/"+songname+"/"+songname+".sm");
+    sm.run("/songs/"+songList[lastvalue]+"/"+songList[lastvalue]+".sm");
   }
 
   void drawObjects() {
@@ -41,18 +41,17 @@ class Screen {
   }
   
     void drawBackground() {
-    if (background != null) { 
-      image(background, width/2, height/2, width, height);
-    } else { 
-      fill(50); 
-      rect(0, 0, width, height);
-    }
+    if (background == null) { 
+      background = loadImage("/assets/gradient-01.jpg");
+    } 
+    image(background, width/2, height/2, width, height);
   }
   
   /********* JUKEBOX *********/
 
   void loadMusic() {
-      song = minim.loadFile("/songs/"+songname+"/"+songname+".mp3");
+    if(firstLoad==true) { song = minim.loadFile("/songs/"+songname+"/"+songname+".mp3"); }
+    else { song = minim.loadFile("/songs/"+songList[lastvalue]+"/"+songList[lastvalue]+".mp3"); }
       // Set loop points if there is no sample cue in .sm data
       cue = (int)(sm.sampleStart*1000);
       duration = (int)(sm.sampleLength*1000);
@@ -73,6 +72,15 @@ class Screen {
         duration = 20*1000;
       } 
       fadeIn();
+  }
+  void drawBanner(){
+       fill(20);
+    rect(0, 0, width, height*0.045);
+    // Main song information
+    fill(255);
+    textAlign(LEFT, CENTER);
+    textFont(debug, height/45);
+    text(sm.artist+" - "+sm.title+", Difficulty "+sm.difficulties[0][0], width*0.01, height*0.02); 
   }
 
   // Shift gain from -80dB to 0dB at loop start point
@@ -97,7 +105,7 @@ class Screen {
       fadeOut();
     } 
     // start fading in early
-    else if (isplaying == false && song.position() > cue+duration-500) { 
+    else if (isplaying == false && song.position() > cue+duration-200) { 
       isplaying = true;
       fadeIn();
     }

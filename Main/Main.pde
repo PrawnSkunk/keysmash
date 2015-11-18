@@ -36,7 +36,7 @@ PFont basic, basic_bold, debug;
 PImage background;
 int index, state;
 int cue, duration;
-boolean isplaying;
+boolean isplaying = true;
 float transitionTimerIn, transitionTimerOut, transitionTimerInMax, transitionTimerOutMax;
 boolean canSetupState = false;
 boolean canTransitionIn = true;
@@ -192,7 +192,7 @@ void controlEvent(ControlEvent theControlEvent) {
       screenAL.get(GAME_SELECT).loadMusic(value);
     } else{
       //println("-1");
-      transition(lastvalue);
+      transition(GAME_PLAY);
     }
   }
 }

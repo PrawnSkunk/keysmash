@@ -35,13 +35,13 @@ class Parse {
   void header(String path) {
     lines = loadStrings(path);
     getInfo();
-    selectDifficulty();    
+    selectDifficulty();
   }
 
   void noteCount() {
-      for (int j=0; j<notes.length; j++) {
-        if (notes[j].length > 0) maxCombo++;
-      }
+    for (int j=0; j<notes.length; j++) {
+      if (notes[j].length > 0) maxCombo++;
+    }
   }
 
   // Append note position index to lineNotes[]
@@ -90,7 +90,11 @@ class Parse {
       }
       if (lines[i].substring(1, lines[i].indexOf(":")).equals("BACKGROUND")) {
         String bgString = lines[i].substring(lines[i].indexOf(":")+1, lines[i].indexOf(";"));
-        background = loadImage("/songs/"+title+"/"+bgString);
+        if (bgString.length() > 1) { 
+          background = loadImage("/songs/"+title+"/"+bgString);
+        } else { 
+          background = loadImage("/assets/gradient-01.jpg");
+        }
         //println("/songs/"+title+"/"+bgString);
       }
       if (lines[i].substring(1, lines[i].indexOf(":")).equals("SAMPLESTART")) {

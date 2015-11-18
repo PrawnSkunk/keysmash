@@ -7,6 +7,7 @@ class Menu extends Screen {
   void screenSetup() {
     super.screenSetup();
     controlP5.hide(1);
+    btn.setupSongSelection();
     if (millis() > 1000) {
       if (song.isPlaying() == false) loadMusic();
     } else {
@@ -22,7 +23,8 @@ class Menu extends Screen {
   void display() {
     background(50);
 
-    image(background, width/2, height/2, width, height);
+    if (background == null) background = loadImage("/assets/gradient-01.jpg");
+    image(background, width/2, height/2, width, height); 
     //filter(BLUR, 5);
     fill(0, 100); 
     rect(0, 0, width, height);
@@ -35,12 +37,6 @@ class Menu extends Screen {
     textFont(basic_bold, height/20);
     text("advanced finger dancing game", width/2, height/2+height/10);
 
-    fill(20);
-    rect(0, 0, width, height*0.045);
-    // Main song information
-    fill(255);
-    textAlign(LEFT, CENTER);
-    textFont(debug, height/45);
-    text("\uf04b"+sm.artist+" - "+sm.title, width*0.01, height*0.02);
+    drawBanner();
   }
 }

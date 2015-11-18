@@ -15,7 +15,7 @@ class Results extends Screen {
   void screenSetup() {
     super.screenSetup();
     minim.stop();
-    loadMusic();
+    loadMusic();    
   }
 
   void screenDraw() {

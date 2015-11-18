@@ -8,8 +8,6 @@ class Select extends Screen {
     super.screenSetup();
     if (song.isPlaying() == false) loadMusic();
 
-    btn.setupSongSelection();
-
     fill(255);
     textAlign(CENTER, CORNER);
   }
@@ -35,12 +33,6 @@ class Select extends Screen {
     textFont(basic, height/15);
     text("Song Select", width/2, height/8);
 
-    fill(20);
-    rect(0, 0, width, height*0.045);
-    // Main song information
-    fill(255);
-    textAlign(LEFT, CENTER);
-    textFont(debug, height/45);
-    text(sm.artist+" - "+sm.title, width*0.01, height*0.02);
+    drawBanner();
   }
 }
