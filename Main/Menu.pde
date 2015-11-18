@@ -6,13 +6,13 @@ class Menu extends Screen {
 
   void screenSetup() {
     super.screenSetup();
-    if(millis() > 1000){
-      if(song.isPlaying() == false) loadMusic();
-    } else{
+    controlP5.hide(1);
+    if (millis() > 1000) {
+      if (song.isPlaying() == false) loadMusic();
+    } else {
       loadMusic();
     }
-    btn.pressStart();
-
+    //btn.pressStart();
   }
   void screenDraw() {
     super.screenDraw();
@@ -30,13 +30,13 @@ class Menu extends Screen {
     fill(255);
     textAlign(CENTER, CORNER);
     textFont(basic_bold, height/5);
-    text("num lock", width/2, height/2);
-    
+    text("KeySmash", width/2, height/2);
+
     textFont(basic_bold, height/20);
-    text("an 8-key rhythm game", width/2, height/2+height/15);
-    
+    text("advanced finger dancing game", width/2, height/2+height/10);
+
     fill(20);
-    rect(0,0,width,height*0.045);
+    rect(0, 0, width, height*0.045);
     // Main song information
     fill(255);
     textAlign(LEFT, CENTER);

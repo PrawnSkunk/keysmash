@@ -7,4 +7,7 @@ class Transmitter {
   Transmitter(float xpos, float ypos) {
     this.pos = new PVector(xpos, ypos);
   }
+  void display(){
+   return; 
+  }
 }

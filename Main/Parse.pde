@@ -32,6 +32,11 @@ class Parse {
     noteConversion();
     noteCount();
   }
+  void header(String path) {
+    lines = loadStrings(path);
+    getInfo();
+    selectDifficulty();    
+  }
 
   void noteCount() {
       for (int j=0; j<notes.length; j++) {
@@ -68,7 +73,6 @@ class Parse {
   // Get title, song artist, audio offset, BPMs
   void getInfo() {
     while (lines[i].length() > 1 && lines[i].charAt(0) == '#') { 
-
       if (lines[i].substring(1, lines[i].indexOf(":")).equals("TITLE")) {
         title = lines[i].substring(lines[i].indexOf(":")+1, lines[i].indexOf(";"));
       }
@@ -87,6 +91,7 @@ class Parse {
       if (lines[i].substring(1, lines[i].indexOf(":")).equals("BACKGROUND")) {
         String bgString = lines[i].substring(lines[i].indexOf(":")+1, lines[i].indexOf(";"));
         background = loadImage("/songs/"+title+"/"+bgString);
+        //println("/songs/"+title+"/"+bgString);
       }
       if (lines[i].substring(1, lines[i].indexOf(":")).equals("SAMPLESTART")) {
         sampleStart = float(lines[i].substring(lines[i].indexOf(":")+1, lines[i].indexOf(";")));

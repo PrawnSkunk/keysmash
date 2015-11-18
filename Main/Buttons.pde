@@ -4,7 +4,7 @@ class Buttons {
   }
 
   void setupButtons() {
-    
+
     controlP5.setAutoDraw(true); 
 
     // By default all controllers are stored inside Tab 'default' 
@@ -43,6 +43,25 @@ class Buttons {
       .setId(3);
   }
 
-  void pressStart() {
+  void setupSongSelection() {
+
+    if (firstSelectLoad == true) {
+      selectP5.setAutoDraw(false);
+      RadioButton radio = selectP5.addRadioButton("radioButton", 0, 120);
+      radio.setItemsPerRow(1);
+      radio.setSpacingColumn(30);
+      radio.setSpacingRow(10);
+      radio.setSize(width/3, 30);
+
+      selectP5.setColorActive(color(255, 255, 255, 100));
+      selectP5.setColorBackground(color(255, 25));
+      selectP5.setColorForeground(color(255, 50));
+      selectP5.setColorActive(color(255, 100));
+
+      for (int i=0; i<songList.length; i++) {
+        radio.addItem(songList[i], i);
+      }
+    }
+    firstSelectLoad = false;
   }
 }

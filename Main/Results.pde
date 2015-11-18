@@ -38,17 +38,6 @@ class Results extends Screen {
     return avatar;
   }
 
-  void drawBackground() {
-    if (background != null) { 
-      image(background, width/2, height/2, width, height);
-    } else { 
-      fill(50); 
-      rect(0, 0, width, height);
-    }
-    // Blur does not work when setResizable(true);
-    //filter(BLUR, 5);
-  }
-
   // Draw UI
   void drawMe() {
 

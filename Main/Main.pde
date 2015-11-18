@@ -8,7 +8,7 @@ import java.util.Arrays;
 File songDir;
 Minim minim;
 AudioPlayer song;
-ControlP5 controlP5;
+ControlP5 controlP5,selectP5;
 Buttons btn;
 Parse sm;
 
@@ -40,6 +40,10 @@ boolean isplaying;
 float transitionTimerIn, transitionTimerOut, transitionTimerInMax, transitionTimerOutMax;
 boolean canSetupState = false;
 boolean canTransitionIn = true;
+boolean firstLoad = true;
+boolean firstSelectLoad = true;
+
+int value, lastvalue;
 
 void setup() { 
   size(800, 600);
@@ -59,11 +63,11 @@ void draw() {
 }
 
 // Is transition out done?
-void setupStateFlag(){
-   if (canSetupState == true) {
+void setupStateFlag() {
+  if (canSetupState == true) {
     setupState();
     canSetupState = false;
-  } 
+  }
 }
 
 // Calibrate events to window dimensions
@@ -76,9 +80,9 @@ void drawCalibrate() {
 void setupSongs() {
   songDir = new File(dataPath("/songs/"));
   songList = songDir.list();
-  songname = songList[0];
+  songname = songList[(int)random(0,songList.length)];
   sm = new Parse();
-  sm.run("/songs/"+songname+"/"+songname+".sm");
+  sm.header("/songs/"+songname+"/"+songname+".sm");
 }
 
 void transitionIn() {
@@ -108,6 +112,7 @@ void setupSettings() {
   // Objects must be in setup()
   minim = new Minim(this);
   controlP5 = new ControlP5(this);
+  selectP5 = new ControlP5(this);
   btn = new Buttons();
 
   // Setup states
@@ -124,7 +129,7 @@ void setupSettings() {
 
   // Space between receptors
   receptorRadius = 72.0;
-  
+
   // transition in/out times (in frames)
   transitionTimerInMax = transitionTimerOutMax = 20;
 }
@@ -177,5 +182,17 @@ void transition(int s) {
 void controlEvent(ControlEvent theControlEvent) {
   if (theControlEvent.isTab()) {
     transition(theControlEvent.getTab().getId());
+  }
+  if (theControlEvent.isGroup()) {
+    lastvalue = value;
+    value = (int)theControlEvent.getValue();
+    if (value >= 0){
+      sm = new Parse();
+      sm.header("/songs/"+songList[value]+"/"+songList[value]+".sm");
+      screenAL.get(GAME_SELECT).loadMusic(value);
+    } else{
+      //println("-1");
+      transition(lastvalue);
+    }
   }
 }
