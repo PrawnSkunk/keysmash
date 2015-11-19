@@ -14,13 +14,13 @@ class Results extends Screen {
 
   void screenSetup() {
     super.screenSetup();
-    minim.stop();
-    loadMusic();    
+    song.pause();
+    //loadMusic();    
   }
 
   void screenDraw() {
     super.screenDraw();
-    loopMusic();
+    //loopMusic();
     drawMe();
   }
 
@@ -57,6 +57,7 @@ class Results extends Screen {
     strokeWeight(4);
     ellipse(width/2, height*0.15, height/9, height/9);
     image(maskAvatar(), width/2, height*0.15);  
+    strokeWeight(1);
     noStroke();
 
     // Line
@@ -84,7 +85,8 @@ class Results extends Screen {
 
     // Difficulty Info
     textFont(basic, height/35);
-    text(sm.difficulties[0][sm.selectedDifficulty], width*0.77, height*0.09);
+    //text(sm.difficulties[0][sm.selectedDifficulty], width*0.77, height*0.09);
+    text("?", width*0.77, height*0.09);
     textFont(basic, height/45);
     text("difficulty", width*0.77, height*0.12);
 

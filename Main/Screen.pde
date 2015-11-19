@@ -33,54 +33,52 @@ class Screen {
     }
   }
 
-  // Current time
-  // Make X smaller in X*framecount for the notes to arrive ealier
-  float getTime() {
-    float currTime = (float(millis())-timeSinceLastStateSwitch)+(sm.offset*1000)+manualOffset+250;//+(-0.5*frameCount);
-    return (float)((currTime));
-  }
-  
-    void drawBackground() {
+
+
+  void drawBackground() {
     if (background == null) { 
       background = loadImage("/assets/gradient-01.jpg");
     } 
     image(background, width/2, height/2, width, height);
   }
-  
+
   /********* JUKEBOX *********/
 
   void loadMusic() {
-    if(firstLoad==true) { song = minim.loadFile("/songs/"+songname+"/"+songname+".mp3"); }
-    else { song = minim.loadFile("/songs/"+songList[lastvalue]+"/"+songList[lastvalue]+".mp3"); }
-      // Set loop points if there is no sample cue in .sm data
-      cue = (int)(sm.sampleStart*1000);
-      duration = (int)(sm.sampleLength*1000);
-      if (cue == 0) {
-        cue = 46*1000;
-        duration = 20*1000;
-      } 
-      fadeIn();
+    if (firstLoad==true) { 
+      song = minim.loadFile("/songs/"+songname+"/"+songname+".mp3");
+    } else { 
+      song = minim.loadFile("/songs/"+songList[lastvalue]+"/"+songList[lastvalue]+".mp3");
+    }
+    // Set loop points if there is no sample cue in .sm data
+    cue = (int)(sm.sampleStart*1000);
+    duration = (int)(sm.sampleLength*1000);
+    if (cue == 0) {
+      cue = 46*1000;
+      duration = 20*1000;
+    } 
+    fadeIn();
   }
   void loadMusic(int i) {
-      fadeOut();  
-      song = minim.loadFile("/songs/"+songList[i]+"/"+songList[i]+".mp3");
-      // Set loop points if there is no sample cue in .sm data
-      cue = (int)(sm.sampleStart*1000);
-      duration = (int)(sm.sampleLength*1000);
-      if (cue == 0) {
-        cue = 46*1000;
-        duration = 20*1000;
-      } 
-      fadeIn();
+    fadeOut();  
+    song = minim.loadFile("/songs/"+songList[i]+"/"+songList[i]+".mp3");
+    // Set loop points if there is no sample cue in .sm data
+    cue = (int)(sm.sampleStart*1000);
+    duration = (int)(sm.sampleLength*1000);
+    if (cue == 0) {
+      cue = 46*1000;
+      duration = 20*1000;
+    } 
+    fadeIn();
   }
-  void drawBanner(){
-       fill(20);
+  void drawBanner() {
+    fill(20);
     rect(0, 0, width, height*0.045);
     // Main song information
     fill(255);
     textAlign(LEFT, CENTER);
     textFont(debug, height/45);
-    text(sm.artist+" - "+sm.title+", Difficulty "+sm.difficulties[0][0], width*0.01, height*0.02); 
+    text(sm.artist+" - "+sm.title+", Difficulty "+sm.difficulties[0][0], width*0.01, height*0.02);
   }
 
   // Shift gain from -80dB to 0dB at loop start point

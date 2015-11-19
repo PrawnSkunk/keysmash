@@ -91,9 +91,9 @@ class Parse {
       if (lines[i].substring(1, lines[i].indexOf(":")).equals("BACKGROUND")) {
         String bgString = lines[i].substring(lines[i].indexOf(":")+1, lines[i].indexOf(";"));
         if (bgString.length() > 1) { 
-          background = loadImage("/songs/"+title+"/"+bgString);
+          //background = loadImage("/songs/"+title+"/"+bgString);
         } else { 
-          background = loadImage("/assets/gradient-01.jpg");
+          if (background == null) background = loadImage("/assets/gradient-01.jpg");
         }
         //println("/songs/"+title+"/"+bgString);
       }

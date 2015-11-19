@@ -26,12 +26,10 @@ class Select extends Screen {
     fill(0, 100); 
     rect(0, 0, width, height);
     
+    fill(255, 20); 
+    rect(width/8,0,width/4,height);
+    
     selectP5.draw();
-
-    fill(255); 
-    textAlign(CENTER, CORNER);
-    textFont(basic, height/15);
-    text("Song Select", width/2, height/8);
 
     drawBanner();
   }

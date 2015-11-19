@@ -7,6 +7,7 @@ class Menu extends Screen {
   void screenSetup() {
     super.screenSetup();
     controlP5.hide(1);
+    btn.setupMenu();
     btn.setupSongSelection();
     if (millis() > 1000) {
       if (song.isPlaying() == false) loadMusic();
@@ -29,13 +30,20 @@ class Menu extends Screen {
     fill(0, 100); 
     rect(0, 0, width, height);
 
-    fill(255);
+   menuP5.draw();
+   
+    fill(255,200);
     textAlign(CENTER, CORNER);
     textFont(basic_bold, height/5);
-    text("KeySmash", width/2, height/2);
+    text("KeySmash", width/2, height/2.3);
 
-    textFont(basic_bold, height/20);
-    text("advanced finger dancing game", width/2, height/2+height/10);
+    fill(255,100);
+    textFont(basic_bold, height/22);
+    text("advanced finger dancing game", width/2+width/8.5, height/2.3+height/20);
+    
+    fill(255,200);
+    textFont(basic, height/30);
+    text("< press enter >", width/2, height/1.7);
 
     drawBanner();
   }

@@ -58,20 +58,4 @@ class Receptor { //<>//
     popMatrix();
   }
 
-
-  void keyPressed() {
-    for (int i=0; i < keys.length; i++) {
-      if (key == keys[i]) {
-        pressed[i] = true;
-      }
-    }
-  }
-
-  void keyReleased() {
-    for (int i=0; i < keys.length; i++) {
-      if (key == keys[i]) {
-        pressed[i] = false;
-      }
-    }
-  }
 }

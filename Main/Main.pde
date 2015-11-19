@@ -1,5 +1,6 @@
 // Import libraries //<>//
 import ddf.minim.*;
+import ddf.minim.analysis.*;
 import controlP5.*;
 import java.util.Date;
 import java.util.Arrays;
@@ -8,9 +9,10 @@ import java.util.Arrays;
 File songDir;
 Minim minim;
 AudioPlayer song;
-ControlP5 controlP5,selectP5;
+ControlP5 controlP5, selectP5, menuP5;
 Buttons btn;
 Parse sm;
+RadioButton radio;
 
 // Declare array lists
 ArrayList<Arrow> arrowAL;
@@ -42,8 +44,16 @@ boolean canSetupState = false;
 boolean canTransitionIn = true;
 boolean firstLoad = true;
 boolean firstSelectLoad = true;
-
 int value, lastvalue;
+int radioValue;
+boolean navigating = false;
+float navigationTimer = 0;
+
+// New!
+AudioMetaData meta;
+BeatDetect beat;
+int  r = 200;
+float rad = 70;
 
 void setup() { 
   size(800, 600);
@@ -52,12 +62,14 @@ void setup() {
   setupSettings();
   setupState();
   btn.setupButtons();
+  setupVizualization();
 }
 
 void draw() {
   setupStateFlag();
   drawCalibrate();
   drawState();
+  drawVisualization();
   transitionIn();
   transitionOut();
 }
@@ -80,7 +92,8 @@ void drawCalibrate() {
 void setupSongs() {
   songDir = new File(dataPath("/songs/"));
   songList = songDir.list();
-  songname = songList[(int)random(0,songList.length)];
+  value = lastvalue = (int)random(0, songList.length);
+  songname = songList[value];
   sm = new Parse();
   sm.header("/songs/"+songname+"/"+songname+".sm");
 }
@@ -107,12 +120,18 @@ void setupSettings() {
   imageMode(CENTER);
 
   // Can the window be resized?
-  surface.setResizable(false); 
+  surface.setResizable(true); 
 
   // Objects must be in setup()
   minim = new Minim(this);
   controlP5 = new ControlP5(this);
+
   selectP5 = new ControlP5(this);
+  //selectP5.setControlFont(new ControlFont(createFont("Georgia", 20), 20));
+  //PFont f = createFont("Arial",9);
+  //menuP5.setControlFont(f);
+
+  menuP5 = new ControlP5(this);
   btn = new Buttons();
 
   // Setup states
@@ -180,19 +199,115 @@ void transition(int s) {
 
 // Called by .activateEvent(true) in Buttons class
 void controlEvent(ControlEvent theControlEvent) {
+  /*
   if (theControlEvent.isTab()) {
-    transition(theControlEvent.getTab().getId());
-  }
+   transition(theControlEvent.getTab().getId());
+   }
+   */
   if (theControlEvent.isGroup()) {
     lastvalue = value;
     value = (int)theControlEvent.getValue();
-    if (value >= 0){
+    if (value >= 0) {
       sm = new Parse();
       sm.header("/songs/"+songList[value]+"/"+songList[value]+".sm");
       screenAL.get(GAME_SELECT).loadMusic(value);
-    } else{
-      //println("-1");
+      selectP5.setPosition(width/8,120-value*41);
+    } else {
+      // value is -1
       transition(GAME_PLAY);
     }
+  } else if (theControlEvent.getController().getName().equals("bang")) {
+    transition(GAME_SELECT);
   }
+}
+// Current time
+// Make X smaller in X*framecount for the notes to arrive ealier
+float getTime() {
+  float currTime = (float(millis())-timeSinceLastStateSwitch)+(sm.offset*1000)+manualOffset+250;//+(-0.5*frameCount);
+  return (float)((currTime));
+}
+void keyPressed() {
+  if (key == ESC) {
+    key = BACKSPACE;
+  }
+
+  // Override
+  if (key == '!')transition(state+1);
+
+  // Enter
+  if (key == ENTER) {
+    if (state == GAME_MENU) transition(state+1);
+    else if (state == GAME_SELECT) {
+      transition(state+1);
+    }
+  }
+
+  // Restart
+  if (key == '/') {
+    if (state == GAME_PLAY) transition(GAME_PLAY);
+    else if (state == GAME_RESULT) transition(GAME_PLAY);
+  }
+
+  // Quit
+  if (key == CODED && keyCode == CONTROL) {
+    if (state == GAME_PLAY) transition(GAME_RESULT);
+    else if (state == GAME_RESULT) transition(GAME_SELECT);
+    else if (state == GAME_SELECT) transition(GAME_MENU);
+  }
+  if (key == CODED) {
+    if (getTime()-navigationTimer > 900) {
+      navigationTimer = getTime();
+      if (key == CODED && keyCode == UP) {
+        if (value > 0) radio.activate(songList[--value]);
+      }
+      if (key == CODED && keyCode == DOWN) {
+        if (value < songList.length-1) radio.activate(songList[++value]);
+      }
+    }
+  }
+}
+
+void setupVizualization() {
+  beat = new BeatDetect();
+}
+
+void drawVisualization() {
+  pushMatrix();
+  float t = map(mouseX, 0, width, 0, 1);
+  beat.detect(song.mix);
+  fill(#1A1F18, 10);
+  noStroke();
+  translate(width/2, height/2);
+  noFill();
+  fill(-1, 10);
+  if (beat.isOnset()) rad = rad*0.9;
+  else rad = 70;
+  ellipse(0, 0, 4*rad, 4*rad);
+  stroke(-1, 15);
+  int bsize = song.bufferSize();
+  for (int i = 0; i < bsize - 1; i+=5)
+  {
+    float x = (r)*cos(i*2*PI/bsize);
+    float y = (r)*sin(i*2*PI/bsize);
+    float x2 = (r + song.left.get(i)*100)*cos(i*2*PI/bsize);
+    float y2 = (r + song.left.get(i)*100)*sin(i*2*PI/bsize);
+    strokeWeight(1);
+    line(x, y, x2, y2);
+  }
+  beginShape();
+  noFill();
+  stroke(-1, 20);
+  for (int i = 0; i < bsize; i+=30)
+  {
+    float x2 = (r + song.left.get(i)*100)*cos(i*2*PI/bsize);
+    float y2 = (r + song.left.get(i)*100)*sin(i*2*PI/bsize);
+    vertex(x2, y2);
+    pushStyle();
+    stroke(-1,10);
+    strokeWeight(2);
+    point(x2, y2);
+    popStyle();
+  }
+  endShape();
+  popMatrix();
 }
