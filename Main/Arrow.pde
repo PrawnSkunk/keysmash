@@ -1,5 +1,5 @@
 class Arrow {
-  
+
   // Fields
   PVector pos;
   PVector vel;
@@ -12,8 +12,8 @@ class Arrow {
     this.vel = new PVector(xvel, yvel); 
     this.r = r;
     if (xvel != 0 && yvel != 0) { 
-      img = loadImage("/assets/note_blue.png");
-      //img = loadImage("note_red.png");
+      img = loadImage("/assets/note_red.png");
+      //img = loadImage("/assets/note_blue.png");
     } else { 
       img = loadImage("/assets/note_red.png");
     }

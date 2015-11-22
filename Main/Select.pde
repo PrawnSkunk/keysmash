@@ -16,20 +16,22 @@ class Select extends Screen {
     super.screenDraw();
     display();
     loopMusic();
+    radioPlay();
   }
-
+  
   void display() {
     background(100);
 
     drawBackground();
+
     //filter(BLUR, 5);
     fill(0, 100); 
     rect(0, 0, width, height);
-    
-    fill(255, 20); 
-    rect(width/8,0,width/4,height);
-    
-    selectP5.draw();
+
+    vis.drawVisualization();
+
+    cp5Select.draw();
+    btn.drawLabels();
 
     drawBanner();
   }

@@ -1,86 +1,71 @@
 class Buttons {
-  
+
+  // Known bug: radiobuttons break upon clicking
+  int radioXPos, radioYPos, radioHeight, radioWidthInactive, radioWidthActive, radioSpacing;
+
   Buttons() {
+    this.radioWidthInactive = int(width/2);
+    this.radioWidthActive= int(width/2);
+    this.radioYPos = int(width/4);
+    this.radioXPos = int(width-radioWidthInactive);
+    this.radioHeight = 50;
+    this.radioSpacing = 0;
   }
 
-  void setupButtons() {
-
-    controlP5.setAutoDraw(false); 
-
-    // By default all controllers are stored inside Tab 'default' 
-    controlP5.addTab("Song Selection");
-    controlP5.addTab("Gameplay");
-    controlP5.addTab("Results Screen");
-    controlP5.setColorActive(color(255, 255, 255, 100));
-    controlP5.setColorBackground(color(255, 25));
-    controlP5.setColorForeground(color(255, 50));
-    controlP5.setColorActive(color(255, 100));
-    controlP5.setPosition(0, height-40);
-
-    controlP5.getTab("default")
-      .setWidth(120)
-      .setHeight(40) 
-      .activateEvent(true) // receives a controlEvent
-      .setLabel("Main Menu")
-      .setId(0);
-
-    controlP5.getTab("Song Selection")
-      .setWidth(120)
-      .setHeight(40) 
-      .activateEvent(true)
-      .setId(1);
-
-    controlP5.getTab("Gameplay")
-      .setWidth(120)
-      .setHeight(40) 
-      .activateEvent(true)
-      .setId(2);
-
-    controlP5.getTab("Results Screen")
-      .setWidth(120)
-      .setHeight(40) 
-      .activateEvent(true)
-      .setId(3);
-  }
-
-  void setupMenu() {
-    /*
-    if (firstLoad == true) {
-      menuP5.setAutoDraw(false);
-      menuP5.addBang("bang")
-      .setSize(100,30)
-      
-      .setLabel("Start")
-      .setPosition(width/2, height/1.5)
-      .setColorActive(color(255, 255, 255, 100))
-      .setColorBackground(color(255, 25))
-      .setColorForeground(color(255, 50))
-      .setColorActive(color(255, 100));
-      ;
-    }
-    */
-  }
-  void setupSongSelection() {
-
-    if (firstSelectLoad == true) {
-      selectP5.setAutoDraw(false);
-      radio = selectP5.addRadioButton("radioButton", 0, 120);
-      radio.setItemsPerRow(1);
-      radio.setSpacingColumn(1);
-      radio.setSpacingRow(1);
-      radio.setSize(width/4, 40);  
-      selectP5.setPosition(width/8,120-value*41);
-
-      selectP5.setColorBackground(color(255, 25));
-      selectP5.setColorForeground(color(255, 50));
-      selectP5.setColorActive(color(255, 100));
-      ;
-
-      for (int i=0; i<songList.length; i++) {
-        radio.addItem(songList[i], i);
+  // Called by .activateEvent(true) in Buttons class
+  void controlEvent(ControlEvent theControlEvent) {
+    if (theControlEvent.isGroup()) {
+      lastvalue = value;
+      value = (int)theControlEvent.getValue();
+      if (value >= 0) {
+        radioTimer = 25;
+        radioCanPlay = true;
+        radio.setPosition(radioXPos, radioYPos-value*(radioHeight+radioSpacing));
+        radio.getItems().get(value).setWidth(radioWidthActive);
+        radio.getItems().get(lastvalue).setWidth(radioWidthInactive);
+        sm = new Parse();
+        sm.header("/songs/"+songList[value]+"/"+songList[value]+".sm");
+      } else {
+        // theControlEvent.getValue() == -1
+        screenAL.get(state).transition(GAME_PLAY);
       }
+    }
+  }
+
+  void setupSongSelection() {
+    if (firstSelectLoad == true) {
+
+      cp5Select.setAutoDraw(false);
+      cp5Select.setColorBackground(color(255, 25));
+      cp5Select.setColorForeground(color(255, 50));
+      cp5Select.setColorActive(color(255, 100));
+
+      radio = cp5Select.addRadioButton("radioButton", 0, radioYPos);
+      for (int i=0; i<songList.length; i++) {
+        radio.addItem(songList[i], i).hideLabels();
+      }
+      radio.setItemsPerRow(1);
+      radio.setSpacingColumn(radioSpacing);
+      radio.setSpacingRow(radioSpacing);
+      radio.setSize(radioWidthInactive, radioHeight);  
+      radio.setPosition(radioXPos, radioYPos-value*(radioHeight+radioSpacing));
       radio.activate(songname);
+      radio.getItems().get(value).setWidth(radioWidthActive);
     }
     firstSelectLoad = false;
+  }
+
+  void drawLabels() {
+    float[] rpos = radio.getPosition();
+    fill(255);
+    textAlign(LEFT, CENTER);
+    textFont(debug, 18);
+    for (int i=0; i < songList.length; i++) {
+      text(radio.getItems().get(i).getName(), rpos[0]+16, rpos[1]+(i*(radioHeight+radioSpacing))+22);
+    }
+  }
+  
+  void radioActivate(int i) {
+    radio.activate(songList[value+i]);
   }
 }

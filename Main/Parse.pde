@@ -26,6 +26,7 @@ class Parse {
 
   // Functionality
   void run(String path) {
+    lines = new String[0];
     lines = loadStrings(path);
     getInfo();
     selectDifficulty();

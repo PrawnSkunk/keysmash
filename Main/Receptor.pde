@@ -27,7 +27,8 @@ class Receptor { //<>//
     for (int i=0; i<arrowAL.size(); i++) {
       if (arrowAL.get(i).hitCharacter(this)) {
         arrowAL.remove(i);
-        explosionTimer = 10;
+        explosionTimer = 6;
+        score++;
       }
     }
   }
@@ -44,7 +45,6 @@ class Receptor { //<>//
     pushMatrix();
     translate(width/2+pos.x, height/2+pos.y);
     rotate(radians(r*45));
-    tint(255);
     image(img, 0, 0);
     popMatrix();
   }
@@ -53,8 +53,10 @@ class Receptor { //<>//
     pushMatrix();
     translate(width/2+pos.x, height/2+pos.y);
     rotate(radians(r*45));
+    pushStyle();
     tint(255, explosionTimer*50);
     image(hit, 0, 0);
+    popStyle();
     popMatrix();
   }
 

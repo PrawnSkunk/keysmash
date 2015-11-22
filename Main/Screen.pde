@@ -15,10 +15,25 @@ class Screen {
     }
   }
 
+
   // Parse note data
   void parse() {
     sm = new Parse();
-    sm.run("/songs/"+songList[lastvalue]+"/"+songList[lastvalue]+".sm");
+    sm.run("/songs/"+songList[value]+"/"+songList[value]+".sm");
+  }
+
+  void transition(int s) {
+    transitionTimerOut = transitionTimerOutMax;
+    state = s;
+    setupState();
+  }
+  
+  void radioPlay() {
+    if (radioTimer < 0 && radioCanPlay == true) {
+      screenAL.get(GAME_SELECT).loadMusic(value); 
+      radioCanPlay = false;
+    }
+    radioTimer--;
   }
 
   void drawObjects() {
@@ -34,22 +49,17 @@ class Screen {
   }
 
 
-
   void drawBackground() {
     if (background == null) { 
       background = loadImage("/assets/gradient-01.jpg");
     } 
-    image(background, width/2, height/2, width, height);
+    image(background, width/2, height/2);
   }
 
   /********* JUKEBOX *********/
 
   void loadMusic() {
-    if (firstLoad==true) { 
-      song = minim.loadFile("/songs/"+songname+"/"+songname+".mp3");
-    } else { 
-      song = minim.loadFile("/songs/"+songList[lastvalue]+"/"+songList[lastvalue]+".mp3");
-    }
+    song = minim.loadFile("/songs/"+songList[value]+"/"+songList[value]+".mp3");
     // Set loop points if there is no sample cue in .sm data
     cue = (int)(sm.sampleStart*1000);
     duration = (int)(sm.sampleLength*1000);
@@ -60,7 +70,7 @@ class Screen {
     fadeIn();
   }
   void loadMusic(int i) {
-    fadeOut();  
+    fadeOut();
     song = minim.loadFile("/songs/"+songList[i]+"/"+songList[i]+".mp3");
     // Set loop points if there is no sample cue in .sm data
     cue = (int)(sm.sampleStart*1000);
@@ -86,14 +96,14 @@ class Screen {
     song.pause();
     song.rewind();
     song.setLoopPoints(cue, cue+duration);
-    song.shiftGain(-40.0, 0, 1*1000); // 3 second fade in
+    song.shiftGain(-80.0, 0, 1*1000); // 3 second fade in
     song.play();
     song.loop();
   }
 
   // Shift gain from 0dB to -80dB at loop end point
   void fadeOut() {
-    song.shiftGain(0, -40.0, 1*1000); // 4 second fade out
+    song.shiftGain(0, -80.0, 1*1000); // 4 second fade out
   }
 
   // Decide when to call fadeIn() and fadeOut()
