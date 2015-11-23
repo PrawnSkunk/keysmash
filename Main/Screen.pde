@@ -92,12 +92,24 @@ class Screen {
 
   void drawBanner() {
     fill(20);
-    rect(0, 0, width, height*0.045);
+    //rect(0, 0, width, height*0.075);
+    rect(0, height, width, -height*0.075);
+
+    //SFU Logo
+    fill(#c51230);
+    rect(0, height, 85, -height*0.075);
+    fill(255);
+    textAlign(LEFT, LEFT);
+    textFont(basic_bold, height/25);
+    text("SFU", 39, height-6);
+
     // Main song information
     fill(255);
     textAlign(LEFT, CENTER);
-    textFont(debug, height/45);
-    text("KeySmash development build 20151122: "+state, width*0.01, height*0.02);
+    textFont(basic_bold, height/28);
+    text("Max Proske", 95, height-32);
+    textFont(basic, height/42);
+    text(menuDescription[state], 95, height-13);
   }
 
   // Shift gain from -80dB to 0dB at loop start point

@@ -22,8 +22,13 @@ class Select extends Screen {
     display();
     loopMusic();
     radioPlay();
+    translation();
   }
-  
+    void translation() {
+    if ((transitionTimerIn != 0 || transitionTimerIn != 0) && octPos > -200) {
+      octPos -= 20;
+    }
+  }
   void display() {
     drawBackground();
     

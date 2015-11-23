@@ -22,6 +22,7 @@ class Results extends Screen {
     super.screenDraw();
     //loopMusic();
     drawMe();
+    drawBanner();
   }
 
   /********* RESULTS SCREEN *********/

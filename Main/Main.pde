@@ -1,28 +1,40 @@
 // Import libraries //<>//
+import controlP5.*;
 import ddf.minim.*;
 import ddf.minim.analysis.*;
-import controlP5.*;
 import java.util.Date;
 import java.util.Arrays;
 
 // Declare class objects
-File songDir;
-Minim minim;
+Audio audio;
 AudioPlayer song;
-ControlP5 cp5, cp5Select, cp5Menu;
 Buttons btn;
+ControlP5 cp5, cp5Select, cp5Menu;
+File songDir;
+Input input;
+Minim minim;
 Parse sm;
 RadioButton radio, menu;
 Visualization vis;
-Audio audio;
-Input input;
-Group g1, g2;
 
 // Declare array lists
 ArrayList<Arrow> arrowAL;
 ArrayList<Receptor> receptorAL;
-ArrayList<Transmitter> transmitterAL;
 ArrayList<Screen> screenAL;
+ArrayList<Transmitter> transmitterAL;
+
+// Declare common global variables
+PVector[] grid; // Receptor column position
+int[] rotations; // Receptor rotation position
+boolean[] pressed; // Current keys pressed
+char[] keys; // Input keybinds
+String[] songList, menuList, menuDescription;
+float octPos, receptorRadius, speedmod, timeSinceLastStateSwitch, time, manualOffset, transitionTimerIn, transitionTimerOut, transitionTimerInMax, transitionTimerOutMax, navigationTimer, radioTimer;
+int index, state, cue, duration, value, lastvalue, valueMenu, lastvalueMenu, score;
+boolean isplaying, canTransitionIn, firstTitleLoad, firstMenuLoad, firstSelectLoad, radioCanPlay, menuSongPlaying;
+PFont basic, basic_bold, debug;
+PImage background;
+String songname;
 
 // Initialize game state constants
 final int GAME_TITLE = 0;
@@ -31,38 +43,13 @@ final int GAME_SELECT = 2;
 final int GAME_PLAY = 3;
 final int GAME_RESULT = 4;
 
-// Declare common global variables
-PVector[] grid; // Receptor column position
-int[] rotations; // Receptor rotation position
-boolean[] pressed; // Current keys pressed
-char[] keys; // Input keybinds
-String[] songList; // List of folders in /data/songs/
-String[] menuList;
-float receptorRadius, speedmod, timeSinceLastStateSwitch, time, manualOffset, transitionTimerIn, transitionTimerOut, transitionTimerInMax, transitionTimerOutMax, navigationTimer, radioTimer;
-int index, state, cue, duration, value, lastvalue, valueMenu, lastvalueMenu, score;
-PFont basic, basic_bold, debug;
-PImage background;
-String songname;
-boolean isplaying = true;
-boolean canTransitionIn = true;
-boolean firstTitleLoad = true;
-boolean firstMenuLoad = true;
-boolean firstSelectLoad = true;
-boolean radioCanPlay = true;
-boolean menuSongPlaying = true;
-float octPos;
-
 void setup() { 
   size(800, 600);
-  smooth();
-  noStroke();
-  imageMode(CENTER);
   setupProgram();
 }
 
 void draw() {
   drawState();
-  vis.drawTransitions();
 }
 
 void setupProgram() {
@@ -70,6 +57,26 @@ void setupProgram() {
   setupSettings();
   setupState();
   vis.setupVizualization();
+}
+
+// This method is called once by setup()
+void setupState() { 
+  getState().screenSetup();
+}
+
+// This method is called every frame by draw()
+void drawState() {
+  getState().screenDraw();
+}
+
+// Get current Screen object
+Screen getState() {
+  return screenAL.get(state);
+}
+
+// Get current time
+float getTime() {
+  return float(millis())-timeSinceLastStateSwitch+(sm.offset*1000)+manualOffset+250;
 }
 
 // Load songs directory and run parser
@@ -84,6 +91,10 @@ void setupSongDirectory() {
 
 // Main skecth settings
 void setupSettings() { 
+
+  smooth();
+  noStroke();
+  imageMode(CENTER);
 
   // Can the window be resized?
   surface.setResizable(false); 
@@ -106,6 +117,15 @@ void setupSettings() {
   screenAL.add(new Gameplay());
   screenAL.add(new Results());
 
+  // Boolean states
+  isplaying = true;
+  canTransitionIn = true;
+  firstTitleLoad = true;
+  firstMenuLoad = true;
+  firstSelectLoad = true;
+  radioCanPlay = true;
+  menuSongPlaying = true;
+
   // Load fonts
   debug = createFont("/assets/Amelia-Basic.ttf", 18, true); 
   basic = createFont("/assets/Amelia-Basic.ttf", 200, true); 
@@ -115,65 +135,18 @@ void setupSettings() {
   receptorRadius = 72.0;
   speedmod = 11;
   manualOffset = -680; //-700 offset with 600px height (smaller is ealier)
-  menuList = new String[]{"Game Start","Options","Exit"};
+  menuList = new String[]{ "Game Start", "Options", "Exit" };
+  menuDescription = new String[]{ "Title screen", "Game menu", "Selecting a song", "Playing", "Viewing results" };
 
   // transition in/out times (in frames)
   transitionTimerInMax = transitionTimerOutMax = 20;
-}
-
-// Called once by setup()
-void setupState() {
-  switch(state) {
-  case GAME_TITLE:
-    screenAL.get(state).screenSetup();
-    break;
-  case GAME_MENU:
-    screenAL.get(state).screenSetup();
-    break;
-  case GAME_SELECT:
-    screenAL.get(state).screenSetup();
-    break;
-  case GAME_PLAY: 
-    screenAL.get(state).screenSetup();
-    break;
-  case GAME_RESULT:
-    screenAL.get(state).screenSetup(); 
-    break;
-  }
-}
-
-// Called every frame by draw()
-void drawState() {
-  //if (transitionTimerOut == 0) {
-    switch(state) {
-    case GAME_TITLE:
-      screenAL.get(state).screenDraw();
-      break;
-    case GAME_MENU:
-      screenAL.get(state).screenDraw();
-      break;
-    case GAME_SELECT:
-      screenAL.get(state).screenDraw();
-      break;
-    case GAME_PLAY: 
-      screenAL.get(state).screenDraw();
-      break;
-    case GAME_RESULT:
-      screenAL.get(state).screenDraw(); 
-      break;
-    }
-  //}
-}
-
-// Current time (make X smaller in X*framecount for the notes to arrive ealier)
-float getTime() {
-  return float(millis())-timeSinceLastStateSwitch+(sm.offset*1000)+manualOffset+250;
 }
 
 // Forward controlEvent callback method
 void controlEvent(ControlEvent theControlEvent) {
   btn.controlEvent(theControlEvent);
 }
+
 // Forward keyPressed callback method
 void keyPressed() {
   input.keyPressed();
