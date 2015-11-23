@@ -21,13 +21,17 @@ class Screen {
     sm = new Parse();
     sm.run("/songs/"+songList[value]+"/"+songList[value]+".sm");
   }
+  void parse(String song) {
+    sm = new Parse();
+    sm.run("/songs/"+songList[value]+"/"+songList[value]+".sm");
+  }
 
   void transition(int s) {
     transitionTimerOut = transitionTimerOutMax;
     state = s;
     setupState();
   }
-  
+
   void radioPlay() {
     if (radioTimer < 0 && radioCanPlay == true) {
       screenAL.get(GAME_SELECT).loadMusic(value); 
@@ -53,7 +57,11 @@ class Screen {
     if (background == null) { 
       background = loadImage("/assets/gradient-01.jpg");
     } 
+    background(50);
     image(background, width/2, height/2);
+    fill(0, 100); 
+    rect(0, 0, width, height);
+    vis.drawVisualization(int(octPos));
   }
 
   /********* JUKEBOX *********/
@@ -81,6 +89,7 @@ class Screen {
     } 
     fadeIn();
   }
+
   void drawBanner() {
     fill(20);
     rect(0, 0, width, height*0.045);
@@ -88,7 +97,7 @@ class Screen {
     fill(255);
     textAlign(LEFT, CENTER);
     textFont(debug, height/45);
-    text(sm.artist+" - "+sm.title+", Difficulty "+sm.difficulties[0][0], width*0.01, height*0.02);
+    text("KeySmash development build 20151122", width*0.01, height*0.02);
   }
 
   // Shift gain from -80dB to 0dB at loop start point

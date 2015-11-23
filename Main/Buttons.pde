@@ -8,8 +8,8 @@ class Buttons {
     this.radioWidthActive= int(width/2);
     this.radioYPos = int(width/4);
     this.radioXPos = int(width-radioWidthInactive);
-    this.radioHeight = 50;
-    this.radioSpacing = 0;
+    this.radioHeight = 48;
+    this.radioSpacing = 1;
   }
 
   // Called by .activateEvent(true) in Buttons class
@@ -27,12 +27,35 @@ class Buttons {
         sm.header("/songs/"+songList[value]+"/"+songList[value]+".sm");
       } else {
         // theControlEvent.getValue() == -1
-        screenAL.get(state).transition(GAME_PLAY);
+        value = lastvalue; // don't crash when clicking
+        screenAL.get(state).transition(state+1);
       }
     }
   }
 
+  void setupMenuSelection() {
+
+    if (firstMenuLoad == true) {
+
+      cp5Menu.setAutoDraw(false);
+      cp5Menu.setColorBackground(color(255, 1));
+      cp5Menu.setColorForeground(color(255, 25));
+      cp5Menu.setColorActive(color(255, 50));
+      menu = cp5Menu.addRadioButton("radioButtonMenu", radioXPos, radioYPos);
+      for (int i=0; i < menuList.length; i++) {
+        menu.addItem(menuList[i], i).hideLabels();
+      }
+      // ACTIVATING CAUSES PROBLEMS?
+      //menu.activate(0);
+      menu.setSpacingColumn(radioSpacing);
+      menu.setSpacingRow(radioSpacing);
+      menu.setSize(radioWidthInactive/2, radioHeight);
+    }
+    firstMenuLoad = false;
+  }
+
   void setupSongSelection() {
+
     if (firstSelectLoad == true) {
 
       cp5Select.setAutoDraw(false);
@@ -55,7 +78,7 @@ class Buttons {
     firstSelectLoad = false;
   }
 
-  void drawLabels() {
+  void drawSelectLabels() {
     float[] rpos = radio.getPosition();
     fill(255);
     textAlign(LEFT, CENTER);
@@ -64,8 +87,21 @@ class Buttons {
       text(radio.getItems().get(i).getName(), rpos[0]+16, rpos[1]+(i*(radioHeight+radioSpacing))+22);
     }
   }
-  
+
+  void drawMenuLabels() {
+    float[] mpos = menu.getPosition();
+    fill(255);
+    textAlign(LEFT, CENTER);
+    textFont(debug, 18);
+    for (int i=0; i < menuList.length; i++) {
+      text(menu.getItems().get(i).getName(), mpos[0]+16, mpos[1]+(i*(radioHeight+radioSpacing))+22);
+    }
+  }
+
   void radioActivate(int i) {
     radio.activate(songList[value+i]);
+  }
+  void menuActivate(int i) {
+    menu.activate(menuList[value+i]);
   }
 }

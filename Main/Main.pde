@@ -12,10 +12,11 @@ AudioPlayer song;
 ControlP5 cp5, cp5Select, cp5Menu;
 Buttons btn;
 Parse sm;
-RadioButton radio;
+RadioButton radio, menu;
 Visualization vis;
 Audio audio;
 Input input;
+Group g1, g2;
 
 // Declare array lists
 ArrayList<Arrow> arrowAL;
@@ -24,10 +25,11 @@ ArrayList<Transmitter> transmitterAL;
 ArrayList<Screen> screenAL;
 
 // Initialize game state constants
-final int GAME_MENU = 0;
-final int GAME_SELECT = 1;
-final int GAME_PLAY = 2;
-final int GAME_RESULT = 3;
+final int GAME_TITLE = 0;
+final int GAME_MENU = 1;
+final int GAME_SELECT = 2;
+final int GAME_PLAY = 3;
+final int GAME_RESULT = 4;
 
 // Declare common global variables
 PVector[] grid; // Receptor column position
@@ -35,6 +37,7 @@ int[] rotations; // Receptor rotation position
 boolean[] pressed; // Current keys pressed
 char[] keys; // Input keybinds
 String[] songList; // List of folders in /data/songs/
+String[] menuList;
 float receptorRadius, speedmod, timeSinceLastStateSwitch, time, manualOffset, transitionTimerIn, transitionTimerOut, transitionTimerInMax, transitionTimerOutMax, navigationTimer, radioTimer;
 int index, state, cue, duration, value, lastvalue, score;
 PFont basic, basic_bold, debug;
@@ -42,9 +45,12 @@ PImage background;
 String songname;
 boolean isplaying = true;
 boolean canTransitionIn = true;
+boolean firstTitleLoad = true;
 boolean firstMenuLoad = true;
 boolean firstSelectLoad = true;
 boolean radioCanPlay = false;
+boolean menuSongPlaying = true;
+float octPos;
 
 void setup() { 
   size(800, 600);
@@ -73,7 +79,7 @@ void setupSongDirectory() {
   value = lastvalue = (int)random(0, songList.length);
   songname = songList[value];
   sm = new Parse();
-  sm.header("/songs/"+songname+"/"+songname+".sm");
+  sm.header("/assets/Amanecer/Amanecer.sm");
 }
 
 // Main skecth settings
@@ -94,6 +100,7 @@ void setupSettings() {
 
   // Setup states
   screenAL = new ArrayList<Screen>();
+  screenAL.add(new Title());
   screenAL.add(new Menu());
   screenAL.add(new Select());
   screenAL.add(new Gameplay());
@@ -108,6 +115,7 @@ void setupSettings() {
   receptorRadius = 72.0;
   speedmod = 11;
   manualOffset = -680; //-700 offset with 600px height (smaller is ealier)
+  menuList = new String[]{"Game Start","Options","Exit"};
 
   // transition in/out times (in frames)
   transitionTimerInMax = transitionTimerOutMax = 20;
@@ -116,39 +124,45 @@ void setupSettings() {
 // Called once by setup()
 void setupState() {
   switch(state) {
+  case GAME_TITLE:
+    screenAL.get(state).screenSetup();
+    break;
   case GAME_MENU:
-    screenAL.get(GAME_MENU).screenSetup();
+    screenAL.get(state).screenSetup();
     break;
   case GAME_SELECT:
-    screenAL.get(GAME_SELECT).screenSetup();
+    screenAL.get(state).screenSetup();
     break;
   case GAME_PLAY: 
-    screenAL.get(GAME_PLAY).screenSetup();
+    screenAL.get(state).screenSetup();
     break;
   case GAME_RESULT:
-    screenAL.get(GAME_RESULT).screenSetup(); 
+    screenAL.get(state).screenSetup(); 
     break;
   }
 }
 
 // Called every frame by draw()
 void drawState() {
-  if (transitionTimerOut == 0) {
+  //if (transitionTimerOut == 0) {
     switch(state) {
+    case GAME_TITLE:
+      screenAL.get(state).screenDraw();
+      break;
     case GAME_MENU:
-      screenAL.get(GAME_MENU).screenDraw();
+      screenAL.get(state).screenDraw();
       break;
     case GAME_SELECT:
-      screenAL.get(GAME_SELECT).screenDraw();
+      screenAL.get(state).screenDraw();
       break;
     case GAME_PLAY: 
-      screenAL.get(GAME_PLAY).screenDraw();
+      screenAL.get(state).screenDraw();
       break;
     case GAME_RESULT:
-      screenAL.get(GAME_RESULT).screenDraw(); 
+      screenAL.get(state).screenDraw(); 
       break;
     }
-  }
+  //}
 }
 
 // Current time (make X smaller in X*framecount for the notes to arrive ealier)
@@ -163,4 +177,7 @@ void controlEvent(ControlEvent theControlEvent) {
 // Forward keyPressed callback method
 void keyPressed() {
   input.keyPressed();
+}
+void mouseWheel(MouseEvent event) {
+  input.mouseWheel(event);
 }

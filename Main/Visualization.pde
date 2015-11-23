@@ -19,14 +19,15 @@ class Visualization {
     if (transitionTimerIn>0) {
       fill(0, transitionTimerIn*(255/transitionTimerInMax));
       noStroke();
-      rect(0, 0, width, height);
+      //rect(0, 0, width, height);
       transitionTimerIn--;
     }
     if (transitionTimerOut>0) {
       fill(0, 255-transitionTimerOut*(255/transitionTimerOutMax));
       noStroke();
-      rect(0, 0, width, height);
+      //rect(0, 0, width, height);
       transitionTimerOut--;
+      
     }
   }
 
@@ -34,6 +35,13 @@ class Visualization {
     beat = new BeatDetect();
   }
 
+  void drawVisualization(int translation){
+    pushMatrix();
+    translate(translation,0);
+    drawVisualization();
+    popMatrix();
+  }
+  
   void drawVisualization() {
 
     // detect beats
@@ -45,7 +53,7 @@ class Visualization {
     }
 
     pushMatrix();
-    translate(width/4, height/2);
+    translate(width/2, height/2);
 
     // Draw otagon
     pushMatrix();

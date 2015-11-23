@@ -96,7 +96,6 @@ class Parse {
         } else { 
           if (background == null) background = loadImage("/assets/gradient-01.jpg");
         }
-        //println("/songs/"+title+"/"+bgString);
       }
       if (lines[i].substring(1, lines[i].indexOf(":")).equals("SAMPLESTART")) {
         sampleStart = float(lines[i].substring(lines[i].indexOf(":")+1, lines[i].indexOf(";")));

@@ -41,7 +41,7 @@ class Results extends Screen {
   // Draw UI
   void drawMe() {
 
-    drawBackground();
+    image(background, width/2, height/2);
 
     // Header
     fill(0, 150); 
