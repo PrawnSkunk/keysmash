@@ -10,7 +10,8 @@ class Select extends Screen {
   void screenSetup() {
     
     super.screenSetup();
-    if (song.isPlaying() == false) loadMusic();
+    //loadMusic();
+    parse();
 
     fill(255);
     textAlign(CENTER, CORNER);

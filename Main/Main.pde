@@ -39,7 +39,7 @@ char[] keys; // Input keybinds
 String[] songList; // List of folders in /data/songs/
 String[] menuList;
 float receptorRadius, speedmod, timeSinceLastStateSwitch, time, manualOffset, transitionTimerIn, transitionTimerOut, transitionTimerInMax, transitionTimerOutMax, navigationTimer, radioTimer;
-int index, state, cue, duration, value, lastvalue, score;
+int index, state, cue, duration, value, lastvalue, valueMenu, lastvalueMenu, score;
 PFont basic, basic_bold, debug;
 PImage background;
 String songname;
@@ -48,7 +48,7 @@ boolean canTransitionIn = true;
 boolean firstTitleLoad = true;
 boolean firstMenuLoad = true;
 boolean firstSelectLoad = true;
-boolean radioCanPlay = false;
+boolean radioCanPlay = true;
 boolean menuSongPlaying = true;
 float octPos;
 
@@ -180,4 +180,7 @@ void keyPressed() {
 }
 void mouseWheel(MouseEvent event) {
   input.mouseWheel(event);
+}
+void mousePressed() {
+  input.mousePressed();
 }

@@ -6,7 +6,7 @@ class Title extends Screen {
   void screenSetup() {
     super.screenSetup();
     btn.setupSongSelection();
-    radioPlay();
+    //radioPlay();
     if (firstTitleLoad == true) {
       song = minim.loadFile("/assets/Amanecer/Amanecer.mp3");
       song.play();

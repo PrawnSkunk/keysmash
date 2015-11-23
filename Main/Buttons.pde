@@ -15,9 +15,16 @@ class Buttons {
   // Called by .activateEvent(true) in Buttons class
   void controlEvent(ControlEvent theControlEvent) {
     if (theControlEvent.isGroup()) {
-      lastvalue = value;
-      value = (int)theControlEvent.getValue();
-      if (value >= 0) {
+      // Get Value
+      if (state == GAME_SELECT) {
+        lastvalue = value;
+        value = (int)theControlEvent.getValue();
+      }
+      if (state == GAME_MENU) {
+        lastvalueMenu = valueMenu;
+        valueMenu = (int)theControlEvent.getValue();
+      }
+      if (value >= 0 && state == GAME_SELECT) {
         radioTimer = 25;
         radioCanPlay = true;
         radio.setPosition(radioXPos, radioYPos-value*(radioHeight+radioSpacing));
@@ -25,18 +32,33 @@ class Buttons {
         radio.getItems().get(lastvalue).setWidth(radioWidthInactive);
         sm = new Parse();
         sm.header("/songs/"+songList[value]+"/"+songList[value]+".sm");
-      } else {
-        // theControlEvent.getValue() == -1
+      }
+      if (value == -1 && state == GAME_SELECT) {
         value = lastvalue; // don't crash when clicking
         screenAL.get(state).transition(state+1);
+      }
+
+      // Game Menu
+      if (valueMenu == -1 && state == GAME_MENU) {
+        valueMenu = lastvalueMenu; // don't crash when clicking
+        if (valueMenu == 0) { 
+          screenAL.get(state).transition(state+1);
+          if (menuSongPlaying == true) { 
+            screenAL.get(state).fadeOut(); 
+            menuSongPlaying = false;
+          }
+        } else if (valueMenu == 1) {
+        } else if (valueMenu == 2) {
+          exit();
+        }
       }
     }
   }
 
   void setupMenuSelection() {
+    // the item selected is always the last on the list
 
     if (firstMenuLoad == true) {
-
       cp5Menu.setAutoDraw(false);
       cp5Menu.setColorBackground(color(255, 1));
       cp5Menu.setColorForeground(color(255, 25));
@@ -46,17 +68,22 @@ class Buttons {
         menu.addItem(menuList[i], i).hideLabels();
       }
       // ACTIVATING CAUSES PROBLEMS?
-      //menu.activate(0);
+      menu.activate(0);
       menu.setSpacingColumn(radioSpacing);
       menu.setSpacingRow(radioSpacing);
       menu.setSize(radioWidthInactive/2, radioHeight);
+
+      firstMenuLoad = false;
     }
-    firstMenuLoad = false;
+    menu.activate(valueMenu);
   }
 
   void setupSongSelection() {
 
     if (firstSelectLoad == true) {
+
+      firstSelectLoad = false;
+
 
       cp5Select.setAutoDraw(false);
       cp5Select.setColorBackground(color(255, 25));
@@ -75,7 +102,6 @@ class Buttons {
       radio.activate(songname);
       radio.getItems().get(value).setWidth(radioWidthActive);
     }
-    firstSelectLoad = false;
   }
 
   void drawSelectLabels() {
@@ -102,6 +128,6 @@ class Buttons {
     radio.activate(songList[value+i]);
   }
   void menuActivate(int i) {
-    menu.activate(menuList[value+i]);
+    menu.activate(menuList[valueMenu+i]);
   }
 }

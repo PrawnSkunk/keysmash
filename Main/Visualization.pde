@@ -26,8 +26,7 @@ class Visualization {
       fill(0, 255-transitionTimerOut*(255/transitionTimerOutMax));
       noStroke();
       //rect(0, 0, width, height);
-      transitionTimerOut--;
-      
+      transitionTimerOut--; 
     }
   }
 

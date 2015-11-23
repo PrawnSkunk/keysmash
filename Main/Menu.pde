@@ -12,7 +12,6 @@ class Menu extends Screen {
     super.screenDraw();
     translation();
     display();
-    //loopMusic();
   }
   // move the octagon
   void translation() {

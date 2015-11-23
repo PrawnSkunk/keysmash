@@ -97,7 +97,7 @@ class Screen {
     fill(255);
     textAlign(LEFT, CENTER);
     textFont(debug, height/45);
-    text("KeySmash development build 20151122", width*0.01, height*0.02);
+    text("KeySmash development build 20151122: "+state, width*0.01, height*0.02);
   }
 
   // Shift gain from -80dB to 0dB at loop start point

@@ -8,6 +8,7 @@ class Gameplay extends Screen {
   void screenSetup() {
     super.screenSetup();
     score = 0;
+    count = 0;
     arrowAL = new ArrayList<Arrow>();
     receptorAL = new ArrayList<Receptor>();
     transmitterAL = new ArrayList<Transmitter>();
@@ -37,6 +38,8 @@ class Gameplay extends Screen {
   // Execute note data to spawn note at respective transmitter
   void spawnNotes() {
 
+    time = getTime();
+
     // for the length of the array (sm.notes = [8][1.1248313][3.0])
     for (int i=count; i<sm.notes.length; i++) {
       
@@ -44,7 +47,7 @@ class Gameplay extends Screen {
 
         index = (int)sm.notes[i][1];
         float[] gridArr = grid[index].array();
-
+        
         if (time - sm.notes[i][0]*1000 < 0 && time - sm.notes[i][0]*1000 > -1000) {  
           arrowAL.add(new Arrow(gridArr[0]*receptorRadius*8, gridArr[1]*receptorRadius*8, -gridArr[0]*speedmod, -gridArr[1]*speedmod, rotations[index]));
           sm.notes[i][0] = 0;
@@ -55,7 +58,6 @@ class Gameplay extends Screen {
   }
   void screenDraw() {
     super.screenDraw();
-    time = getTime();
     background(0);
     spawnNotes();
     drawObjects();
