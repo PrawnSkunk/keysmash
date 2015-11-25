@@ -16,7 +16,7 @@ class Gameplay extends Screen {
     keys = new char[]{ '4', '2', '8', '6', '7', '1', '9', '3' };
     rotations = new int[]{2, 0, 4, 6, 3, 1, 5, 7};
     pressed = new boolean[keys.length];
-    parse();
+    parseStepfile(value,true);
     gridSetup();
     loadAudio();
     timeSinceLastStateSwitch = float(millis());
@@ -68,7 +68,7 @@ class Gameplay extends Screen {
   // Load and play audio
   void loadAudio() {
     minim.stop();
-    song = minim.loadFile("/songs/"+songList[value]+"/"+songList[value]+".mp3");
+    song = minim.loadFile("/songs/"+songList[value]+"/"+sm.music);
     song.rewind();
     song.play();
   }

@@ -28,7 +28,7 @@ class Input {
 
   void mousePressed() {
     if (state == GAME_TITLE) {
-      screenAL.get(state).transition(state+1);
+     transition(state+1);
     }
   }
 
@@ -39,10 +39,10 @@ class Input {
     // Enter
     if (key == ENTER) {
       if (state == GAME_TITLE) {
-        screenAL.get(state).transition(GAME_MENU);
+        transition(GAME_MENU);
       } else if (state == GAME_MENU) { 
         if (valueMenu == 0) { 
-          screenAL.get(state).transition(state+1);
+          transition(state+1);
           if (menuSongPlaying == true) { 
             screenAL.get(state).fadeOut(); 
             menuSongPlaying = false;
@@ -51,21 +51,21 @@ class Input {
         } else if (valueMenu == 2) {
           exit();
         }
-      } else if (state == GAME_SELECT) screenAL.get(state).transition(state+1);
+      } else if (state == GAME_SELECT) transition(state+1);
     }
 
     // Restart
     if (key == '/') {
-      if (state == GAME_PLAY) screenAL.get(state).transition(GAME_PLAY);
-      else if (state == GAME_RESULT) screenAL.get(state).transition(GAME_PLAY);
+      if (state == GAME_PLAY) transition(GAME_PLAY);
+      else if (state == GAME_RESULT) transition(GAME_PLAY);
     }
 
     // Quit
     if (key == CODED && keyCode == CONTROL) {
-      if (state == GAME_PLAY) screenAL.get(state).transition(GAME_RESULT);
-      else if (state == GAME_RESULT) screenAL.get(state).transition(GAME_SELECT);
-      else if (state == GAME_SELECT) screenAL.get(state).transition(GAME_MENU);
-      else if (state == GAME_MENU) screenAL.get(state).transition(GAME_TITLE);
+      if (state == GAME_PLAY) transition(GAME_RESULT);
+      else if (state == GAME_RESULT) transition(GAME_SELECT);
+      else if (state == GAME_SELECT) transition(GAME_MENU);
+      else if (state == GAME_MENU) transition(GAME_TITLE);
     } 
 
     // Song Selection

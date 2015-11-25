@@ -15,23 +15,6 @@ class Screen {
     }
   }
 
-
-  // Parse note data
-  void parse() {
-    sm = new Parse();
-    sm.run("/songs/"+songList[value]+"/"+songList[value]+".sm");
-  }
-  void parse(String song) {
-    sm = new Parse();
-    sm.run("/songs/"+songList[value]+"/"+songList[value]+".sm");
-  }
-
-  void transition(int s) {
-    transitionTimerOut = transitionTimerOutMax;
-    state = s;
-    setupState();
-  }
-
   void radioPlay() {
     if (radioTimer < 0 && radioCanPlay == true) {
       screenAL.get(GAME_SELECT).loadMusic(value); 
@@ -67,7 +50,7 @@ class Screen {
   /********* JUKEBOX *********/
 
   void loadMusic() {
-    song = minim.loadFile("/songs/"+songList[value]+"/"+songList[value]+".mp3");
+    song = minim.loadFile("/songs/"+songList[value]+"/"+sm.music);
     // Set loop points if there is no sample cue in .sm data
     cue = (int)(sm.sampleStart*1000);
     duration = (int)(sm.sampleLength*1000);
@@ -79,7 +62,7 @@ class Screen {
   }
   void loadMusic(int i) {
     fadeOut();
-    song = minim.loadFile("/songs/"+songList[i]+"/"+songList[i]+".mp3");
+    song = minim.loadFile("/songs/"+songList[i]+"/"+sm.music);
     // Set loop points if there is no sample cue in .sm data
     cue = (int)(sm.sampleStart*1000);
     duration = (int)(sm.sampleLength*1000);

@@ -30,19 +30,18 @@ class Buttons {
         radio.setPosition(radioXPos, radioYPos-value*(radioHeight+radioSpacing));
         radio.getItems().get(value).setWidth(radioWidthActive);
         radio.getItems().get(lastvalue).setWidth(radioWidthInactive);
-        sm = new Parse();
-        sm.header("/songs/"+songList[value]+"/"+songList[value]+".sm");
+        parseStepfile(value,false);
       }
       if (value == -1 && state == GAME_SELECT) {
         value = lastvalue; // don't crash when clicking
-        screenAL.get(state).transition(state+1);
+        transition(state+1);
       }
 
       // Game Menu
       if (valueMenu == -1 && state == GAME_MENU) {
         valueMenu = lastvalueMenu; // don't crash when clicking
         if (valueMenu == 0) { 
-          screenAL.get(state).transition(state+1);
+          transition(state+1);
           if (menuSongPlaying == true) { 
             screenAL.get(state).fadeOut(); 
             menuSongPlaying = false;
@@ -92,7 +91,14 @@ class Buttons {
 
       radio = cp5Select.addRadioButton("radioButton", 0, radioYPos);
       for (int i=0; i<songList.length; i++) {
-        radio.addItem(songList[i], i).hideLabels();
+        parseStepfile(i,false);
+        String radioTitle = sm.title;
+        if (radioTitle.length() == 0) {
+          radioTitle = "No Song Title (id "+i+")";
+          
+        }
+        printArray("."+radioTitle+".");
+        radio.addItem(radioTitle, i).hideLabels();
       }
       radio.setItemsPerRow(1);
       radio.setSpacingColumn(radioSpacing);
@@ -125,7 +131,7 @@ class Buttons {
   }
 
   void radioActivate(int i) {
-    radio.activate(songList[value+i]);
+    radio.activate(value+i);
   }
   void menuActivate(int i) {
     menu.activate(menuList[valueMenu+i]);

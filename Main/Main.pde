@@ -52,11 +52,9 @@ void draw() {
   drawState();
 }
 
-void setupProgram() {
-  setupSongDirectory();
-  setupSettings();
-  setupState();
-  vis.setupVizualization();
+// Get current Screen object
+Screen getState() {
+  return screenAL.get(state);
 }
 
 // This method is called once by setup()
@@ -69,14 +67,47 @@ void drawState() {
   getState().screenDraw();
 }
 
-// Get current Screen object
-Screen getState() {
-  return screenAL.get(state);
+// Transition to another state
+void transition(int s) {
+  transitionTimerOut = transitionTimerOutMax;
+  state = s;
+  setupState();
 }
 
 // Get current time
 float getTime() {
   return float(millis())-timeSinceLastStateSwitch+(sm.offset*1000)+manualOffset+250;
+}
+
+void setupProgram() {
+  setupSongDirectory();
+  setupSettings();
+  setupState();
+  vis.setupVizualization();
+}
+
+void parseStepfile(int index, boolean run) {
+
+  // Destination folder contents
+  File path = new File(dataPath("songs/"+songList[index]));
+  String[] pathArray = path.list();
+
+  // Get the name of the StepMania file type
+  for (int i=0; i<pathArray.length; i++) {
+
+    if (pathArray[i].indexOf(".sm") != -1) {
+      sm = new Parse();
+      if (run == true) { 
+        sm.run("songs/"+songList[index]+"/"+pathArray[i]);
+      } else { 
+        sm.header("songs/"+songList[index]+"/"+pathArray[i]);
+      }
+    }
+    if (pathArray[i].indexOf(".ogg") != -1) {
+      println("ERROR: .ogg audio format is not supported by Minim!");
+      exit();
+    }
+  }
 }
 
 // Load songs directory and run parser
@@ -85,8 +116,7 @@ void setupSongDirectory() {
   songList = songDir.list();
   value = lastvalue = (int)random(0, songList.length);
   songname = songList[value];
-  sm = new Parse();
-  sm.header("/assets/Amanecer/Amanecer.sm");
+  parseStepfile(value,false);
 }
 
 // Main skecth settings
