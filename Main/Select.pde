@@ -10,9 +10,8 @@ class Select extends Screen {
   void screenSetup() {
 
     super.screenSetup();
-    //loadMusic();
     parseStepfile(value, false);
-
+    if (song.isPlaying() == false) loadMusic();
     fill(255);
     textAlign(CENTER, CORNER);
   }
@@ -23,6 +22,7 @@ class Select extends Screen {
     loopMusic();
     radioPlay();
     translation();
+    vis.drawCursor();
   }
   void translation() {
     if ((transitionTimerIn != 0 || transitionTimerIn != 0) && octPos > -200) {

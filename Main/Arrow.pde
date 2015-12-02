@@ -28,14 +28,31 @@ class Arrow {
   // Update position with velocity
   void move() { 
     pos.add(vel);
+    detectCollision();
   }
 
   // Return true if objects touch eachother's bounding boxes 
   boolean hitCharacter(Receptor r)
   {
-    boolean xCollision = abs(pos.x - r.pos.x) <= 6;
-    boolean yCollision = abs(pos.y - r.pos.y) <= 6;
+    boolean xCollision = abs(pos.x - r.pos.x) <= 64;
+    boolean yCollision = abs(pos.y - r.pos.y) <= 64;
     return xCollision && yCollision;
+  }
+  
+  boolean hitCenter(Arrow a)
+  {
+    boolean xCollision = abs(a.pos.x) <= 6;
+    boolean yCollision = abs(a.pos.y) <= 6;
+    return xCollision && yCollision;
+
+  }
+  
+  void detectCollision() {
+      if (hitCenter(this)) {
+        arrowAL.remove(this);
+        score = 0;
+        goal++;
+      }
   }
 
   // Draw arrow

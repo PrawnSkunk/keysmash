@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 // Declare class objects
 Audio audio;
-AudioPlayer song;
+AudioPlayer song, sfx_value, sfx_select;
 Buttons btn;
 ControlP5 cp5, cp5Select, cp5Menu;
 File songDir;
@@ -26,15 +26,16 @@ ArrayList<Transmitter> transmitterAL;
 // Declare common global variables
 PVector[] grid; // Receptor column position
 int[] rotations; // Receptor rotation position
-boolean[] pressed; // Current keys pressed
-char[] keys; // Input keybinds
+boolean[] pressed, played; // Current keys pressed
+char[] keys, keys2; // Input keybinds
 String[] songList, menuList, menuDescription;
 float octPos, receptorRadius, speedmod, timeSinceLastStateSwitch, time, manualOffset, transitionTimerIn, transitionTimerOut, transitionTimerInMax, transitionTimerOutMax, navigationTimer, radioTimer;
-int index, state, cue, duration, value, lastvalue, valueMenu, lastvalueMenu, score;
+int rawScore, index, state, cue, duration, value, lastvalue, valueMenu, lastvalueMenu, score, goal;
 boolean isplaying, canTransitionIn, firstTitleLoad, firstMenuLoad, firstSelectLoad, radioCanPlay, menuSongPlaying;
 PFont basic, basic_bold, debug;
-PImage background;
+PImage background, cursor, cursorTail;
 String songname;
+int[] difficultyArray;
 
 // Initialize game state constants
 final int GAME_TITLE = 0;
@@ -45,6 +46,7 @@ final int GAME_RESULT = 4;
 
 void setup() { 
   size(800, 600);
+  noCursor();
   setupProgram();
 }
 
@@ -69,6 +71,8 @@ void drawState() {
 
 // Transition to another state
 void transition(int s) {
+  sfx_select.rewind();
+  sfx_select.play();
   transitionTimerOut = transitionTimerOutMax;
   state = s;
   setupState();
@@ -99,8 +103,10 @@ void parseStepfile(int index, boolean run) {
       sm = new Parse();
       if (run == true) { 
         sm.run("songs/"+songList[index]+"/"+pathArray[i]);
+        played[index] = true;
       } else { 
         sm.header("songs/"+songList[index]+"/"+pathArray[i]);
+        difficultyArray[index] = int(sm.difficulties[0][0]);
       }
     }
     if (pathArray[i].indexOf(".ogg") != -1) {
@@ -115,8 +121,10 @@ void setupSongDirectory() {
   songDir = new File(dataPath("/songs/"));
   songList = songDir.list();
   value = lastvalue = (int)random(0, songList.length);
+  difficultyArray = new int[songList.length];
+  played = new boolean[songList.length];
   songname = songList[value];
-  parseStepfile(value,false);
+  parseStepfile(value, false);
 }
 
 // Main skecth settings
@@ -139,6 +147,9 @@ void setupSettings() {
   audio = new Audio();
   input = new Input();
 
+  sfx_select = minim.loadFile("/assets/select.wav");
+  sfx_value = minim.loadFile("/assets/value.wav");
+
   // Setup states
   screenAL = new ArrayList<Screen>();
   screenAL.add(new Title());
@@ -160,12 +171,14 @@ void setupSettings() {
   debug = createFont("/assets/Amelia-Basic.ttf", 18, true); 
   basic = createFont("/assets/Amelia-Basic.ttf", 200, true); 
   basic_bold = createFont("/assets/Amelia-Basic-Bold.ttf", 600, true);
+  cursor = loadImage("assets/cursor.png");
+  cursorTail = loadImage("assets/cursortrail.png");
 
   // Space between receptors
   receptorRadius = 72.0;
-  speedmod = 11;
-  manualOffset = -680; //-700 offset with 600px height (smaller is ealier)
-  menuList = new String[]{ "Game Start", "Options", "Exit" };
+  speedmod = 9;
+  manualOffset = -600; //-700 offset with 600px height (smaller is ealier)
+  menuList = new String[]{ "Game Start", "Exit" };
   menuDescription = new String[]{ "Title screen", "Game menu", "Selecting a song", "Playing", "Viewing results" };
 
   // transition in/out times (in frames)

@@ -28,13 +28,49 @@ class Input {
 
   void mousePressed() {
     if (state == GAME_TITLE) {
-     transition(state+1);
+      transition(state+1);
     }
   }
 
   void keyPressed() {
+
     // Escape
-    if (key == ESC) key = BACKSPACE;
+    if (key == ESC) key = '*';
+
+    if (state == GAME_PLAY) {
+      for (int i=0; i<keys.length; i++) {
+        if (key == keys[i]) {
+          receptorAL.get(i).explosionTimer = 6;
+          for (int j=0; j<arrowAL.size(); j++) {
+
+            if (arrowAL.get(j).hitCharacter(receptorAL.get(i))) {
+              //printArray(sm.notes[j][0]);
+              arrowAL.remove(j);
+              //receptorAL.get(i).explosionTimer = 6;
+              score++;
+              rawScore++;
+              goal++;
+            }
+          }
+        }
+      }
+      for (int i=0; i<keys2.length; i++) {
+        if (key == keys2[i]) {
+          receptorAL.get(i).explosionTimer = 6;
+          for (int j=0; j<arrowAL.size(); j++) {
+
+            if (arrowAL.get(j).hitCharacter(receptorAL.get(i))) {
+              //printArray(sm.notes[j][0]);
+              arrowAL.remove(j);
+              //receptorAL.get(i).explosionTimer = 6;
+              score++;
+              rawScore++;
+              goal++;
+            }
+          }
+        }
+      }
+    }
 
     // Enter
     if (key == ENTER) {
@@ -61,7 +97,7 @@ class Input {
     }
 
     // Quit
-    if (key == CODED && keyCode == CONTROL) {
+    if ((key == CODED && keyCode == CONTROL) || key == '*') {
       if (state == GAME_PLAY) transition(GAME_RESULT);
       else if (state == GAME_RESULT) transition(GAME_SELECT);
       else if (state == GAME_SELECT) transition(GAME_MENU);

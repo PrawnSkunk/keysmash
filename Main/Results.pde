@@ -23,6 +23,7 @@ class Results extends Screen {
     //loopMusic();
     drawMe();
     drawBanner();
+    vis.drawCursor();
   }
 
   /********* RESULTS SCREEN *********/
@@ -87,7 +88,7 @@ class Results extends Screen {
     // Difficulty Info
     textFont(basic, height/35);
     //text(sm.difficulties[0][sm.selectedDifficulty], width*0.77, height*0.09);
-    text("?", width*0.77, height*0.09);
+    text(sm.difficulties[0][0], width*0.77, height*0.09);
     textFont(basic, height/45);
     text("difficulty", width*0.77, height*0.12);
 
@@ -100,21 +101,32 @@ class Results extends Screen {
     // Score
     textAlign(CENTER, BOTTOM);
     textFont(basic, height/12);
-    text(nfc(sm.maxCombo*500), width/2, height*0.32);
+    text(nfc(rawScore*500), width/2, height*0.32);
     textFont(basic, height/25);
     text("score", width/2, height*0.3+height/15);
     textFont(basic, height/18);
-    text("100.00%", width/4.5, height*0.32);
+    float accuracy = (float)rawScore/sm.maxCombo*100;
+    text(nfc(accuracy,2)+"%", width/4.5, height*0.32);
     textFont(basic, height/25);
     text("accuracy", width/4.5, height*0.3+height/15);
     textFont(basic, height/18);
-    text(nfc(sm.maxCombo)+"x", width-width/4.5, height*0.32);
+    text(nfc(score)+"x", width-width/4.5, height*0.32);
     textFont(basic, height/25);
     text("combo", width-width/4.5, height*0.3+height/15);
 
     // Grade
+    String grade = "F";
+    if (accuracy <= 30) grade = "F";
+    if (accuracy > 30) grade = "E";
+    if (accuracy > 50) grade = "D";
+    if (accuracy > 67) grade = "C";
+    if (accuracy > 80) grade = "B";
+    if (accuracy > 92) grade = "A";
+    if (accuracy == 100) grade = "S";
+    
+    
     fill(255, 200);
     textFont(basic_bold, height/1.5);
-    text("A+", width/2, height);
+    text(grade, width/2, height);
   }
 }

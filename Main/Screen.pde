@@ -91,8 +91,13 @@ class Screen {
     textAlign(LEFT, CENTER);
     textFont(basic_bold, height/28);
     text("Max Proske", 95, height-32);
-    textFont(basic, height/42);
+    textFont(basic, height/48);
     text(menuDescription[state], 95, height-13);
+    text("Start: ENTER", 230, height-37);
+    text("Back: ESC", 230, height-24);
+    text("Restart: /", 230, height-11);
+    text("Laptop controls: QWE AD ZXC", 310, height-24);
+    text("Desktop controls: 789 46 123", 310, height-11);
   }
 
   // Shift gain from -80dB to 0dB at loop start point

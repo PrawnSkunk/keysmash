@@ -9,12 +9,17 @@ class Visualization {
     this.radMax = this.rad = 70;
     this. r = 200;
     this.opacityOct = 80;
-    this.opacityLine = 8;
-    this.opacityPoint = 8;
-    this.opacityPoint2 = 0;
+    this.opacityLine = 15;
+    this.opacityPoint = 15;
+    this.opacityPoint2 = 15;
     this.stroke = 4;
   }
 
+  void drawCursor(){
+     image(cursorTail,pmouseX,pmouseY);
+     image(cursor,mouseX,mouseY);
+  }
+  
   void drawTransitions() {
     if (transitionTimerIn>0) {
       fill(0, transitionTimerIn*(255/transitionTimerInMax));
@@ -102,4 +107,16 @@ class Visualization {
     }
     endShape(CLOSE);
   }
+  void polygon(float x, float y, float radius) {
+    stroke(255);strokeWeight(1);
+    float angle = TWO_PI / 8;
+    beginShape();
+    for (float a = 0; a < TWO_PI; a += angle) {
+      float sx = x + cos(a) * radius;
+      float sy = y + sin(a) * radius;
+      vertex(sx, sy);
+    }
+    endShape(CLOSE);noStroke();
+  }
+  
 }

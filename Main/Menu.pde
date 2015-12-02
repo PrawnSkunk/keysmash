@@ -12,6 +12,7 @@ class Menu extends Screen {
     super.screenDraw();
     translation();
     display();
+    vis.drawCursor();
   }
   // move the octagon
   void translation() {

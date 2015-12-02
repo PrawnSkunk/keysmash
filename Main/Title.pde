@@ -24,6 +24,7 @@ class Title extends Screen {
     super.screenDraw();
     translation();
     display();
+    vis.drawCursor();
   }
   void translation() {
     if ((transitionTimerIn != 0 || transitionTimerIn != 0) && octPos < 0) {

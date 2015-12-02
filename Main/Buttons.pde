@@ -8,7 +8,7 @@ class Buttons {
     this.radioWidthActive= int(width/2);
     this.radioYPos = int(width/4);
     this.radioXPos = int(width-radioWidthInactive);
-    this.radioHeight = 48;
+    this.radioHeight = 46;
     this.radioSpacing = 1;
   }
 
@@ -30,7 +30,7 @@ class Buttons {
         radio.setPosition(radioXPos, radioYPos-value*(radioHeight+radioSpacing));
         radio.getItems().get(value).setWidth(radioWidthActive);
         radio.getItems().get(lastvalue).setWidth(radioWidthInactive);
-        parseStepfile(value,false);
+        parseStepfile(value, false);
       }
       if (value == -1 && state == GAME_SELECT) {
         value = lastvalue; // don't crash when clicking
@@ -47,7 +47,6 @@ class Buttons {
             menuSongPlaying = false;
           }
         } else if (valueMenu == 1) {
-        } else if (valueMenu == 2) {
           exit();
         }
       }
@@ -91,13 +90,11 @@ class Buttons {
 
       radio = cp5Select.addRadioButton("radioButton", 0, radioYPos);
       for (int i=0; i<songList.length; i++) {
-        parseStepfile(i,false);
+        parseStepfile(i, false);
         String radioTitle = sm.title;
         if (radioTitle.length() == 0) {
-          radioTitle = "No Song Title (id "+i+")";
-          
+          radioTitle = "No Song Title (id#"+i+")";
         }
-        printArray("."+radioTitle+".");
         radio.addItem(radioTitle, i).hideLabels();
       }
       radio.setItemsPerRow(1);
@@ -116,8 +113,19 @@ class Buttons {
     textAlign(LEFT, CENTER);
     textFont(debug, 18);
     for (int i=0; i < songList.length; i++) {
-      text(radio.getItems().get(i).getName(), rpos[0]+16, rpos[1]+(i*(radioHeight+radioSpacing))+22);
+      fill(255);
+      text(radio.getItems().get(i).getName(), rpos[0]+64, rpos[1]+(i*(radioHeight+radioSpacing))+22);
+      fill(255, 50);
+      rect(rpos[0], rpos[1]+(i*(radioHeight+radioSpacing)),radioHeight,radioHeight);
+      fill(255, 150);
+      text(difficultyArray[i], rpos[0]+16, rpos[1]+(i*(radioHeight+radioSpacing))+22);
+      if (played[i] == false) { fill(255, 150); text("unplayed", rpos[0]+300, rpos[1]+(i*(radioHeight+radioSpacing))+22); }
+      else if (played[i] == true) { fill(50,255,50, 150); text("played", rpos[0]+300, rpos[1]+(i*(radioHeight+radioSpacing))+22);}
     }
+    // Library
+    textFont(debug, 14);
+    fill(255, 150);
+    text((songList.length)+" songs in library", rpos[0]+16, rpos[1]+((songList.length)*(radioHeight+radioSpacing))+16);
   }
 
   void drawMenuLabels() {
@@ -132,8 +140,12 @@ class Buttons {
 
   void radioActivate(int i) {
     radio.activate(value+i);
+    sfx_value.rewind();
+    sfx_value.play();
   }
   void menuActivate(int i) {
     menu.activate(menuList[valueMenu+i]);
+    sfx_value.rewind();
+    sfx_value.play();
   }
 }

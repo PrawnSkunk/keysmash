@@ -24,13 +24,7 @@ class Receptor { //<>//
 
   // Check if the arrow has hit the receptor
   void detectCollision() {
-    for (int i=0; i<arrowAL.size(); i++) {
-      if (arrowAL.get(i).hitCharacter(this)) {
-        arrowAL.remove(i);
-        explosionTimer = 6;
-        score++;
-      }
-    }
+
   }
   
   void explosion(){
